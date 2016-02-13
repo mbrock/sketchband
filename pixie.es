@@ -75,7 +75,7 @@ export let Pixie = ({ duration }) =>
           width: "0.5rem",
           borderRadius: "0.25rem",
           height: "0.5rem",
-          background: lighten("cornflowerblue", 0.2),
+          background: "#666",
           WebkitAnimation: `pixie ${duration}s linear infinite`
         }}/>
       </div>

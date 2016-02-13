@@ -23,17 +23,23 @@ let color = require("color")
 
 let lessOpaque = (x, n) => color(x).clearer(n).hslString()
 
-export const name = "SketchBand"
-export const backgroundColor = "royalblue"
-export const secondary = "deeppink"
-export const tagline = "A better way to write songs"
-export let demo = () => <Demo tab={parse(rolling)} />
+const backgroundColor = "#fcfcfc"
+const inactiveBarColor = "white"
+const activeBarColor = "#ddd"
+const headerColor = "#333"
+const lyricColor = headerColor
+const chordBackgroundColor = "#ccc"
+const chordColor = "#333"
+
+let demo = () => <Demo tab={parse(rolling)} />
 
 requestAnimationFrame(() => {
   let div = document.createElement("div")
   document.body.appendChild(div)
-  document.body.style.fontSize = "20px"
+  document.body.style.font =
+    "16px/24px 'helvetica neue', helvetica, arial, sans-serif"
   document.body.style.backgroundColor = backgroundColor
+  document.body.style.margin = "1rem"
   ReactDOM.render(demo(), div)
 })
 
@@ -74,11 +80,10 @@ let Song = ({ context, song, t }) => {
 let BarSequence = ({ context, barSequence, t }) =>
   <div>
     <div style={{
-      fontFamily: "sans-serif",
       textTransform: "uppercase",
-      marginTop: 8,
-      marginBottom: 8,
-      color: "rgba(255,255,255,0.8)",
+      marginTop: ".5rem",
+      marginBottom: ".5rem",
+      color: headerColor,
     }}>{barSequence.name}</div>
     <div style={{
       display: "flex",
@@ -92,7 +97,7 @@ let BarSequence = ({ context, barSequence, t }) =>
 
 let Bar = ({ t, bar }) =>
   <div style={{
-    position: "relative", marginBottom: "1rem", paddingRight: "1rem"
+    position: "relative", marginBottom: "1rem",
   }}>
     {(t >= 0 && t <= 1) &&
       <Pixie duration={secondsPerBar(defaultContext)}/> }
@@ -103,13 +108,12 @@ let Bar = ({ t, bar }) =>
           ${secondsPerBar(defaultContext)}s
           linear infinite`
       } : {}),
-      padding: "0.25rem 0 0 0",
-      minWidth: 80,
-      borderRadius: "0.25rem",
+      border: "1px solid #aaa",
+      minWidth: "8rem",
       transition: `${0.25 * secondsPerBar(defaultContext)}s ease-out all`,
       backgroundColor:
-        (t >= 0 && t < 1) ? "cornflowerblue" :
-          (t < 0 ? secondary : lessOpaque(secondary, 0.3)),
+        (t >= 0 && t < 1) ? activeBarColor :
+          (t < 0 ? inactiveBarColor : lessOpaque(inactiveBarColor, 0.3)),
     }}>
       {bar.voices.map(x => <Voice t={t} voice={x}/>)}
     </div>
@@ -131,9 +135,9 @@ let Harmony = ({ harmony }) =>
 let Lyric = ({ lyric }) =>
   <div style={{
     textAlign: "center",
-    fontFamily: "sans-serif",
-    margin: "0 0.5rem",
-    color: "#eee"
+    margin: "0 .5rem",
+    color: lyricColor,
+    fontWeight: 300,
   }}> {lyric.text} </div>
 
 let Recording = ({ t }) => {
@@ -146,27 +150,21 @@ let Recording = ({ t }) => {
     }}>
       <div style={{
         borderTop: "1px solid rgba(0, 0, 0, 0.1)",
-        height: 5,
-        borderRadius: t > 1 ? "0 0 2px 2px" : "0 0 0 2px",
+        height: "0.5rem",
         background: lessOpaque("black", 0.9),
       }}/>
     </div>
   )
   return <div style={{
     backgroundColor: lessOpaque(backgroundColor, 0.8),
-    borderRadius: "0 0 2px 2px",
-    marginTop: 4,
   }}> {progress} </div>
 }
   
 let Chord = ({ chord }) =>
   <div style={{
-    fontFamily: "sans-serif",
-    backgroundColor: "rgba(255,255,255,0.6)",
-    color: "purple",
-    borderRadius: 2,
-    margin: "0 4px 2px 4px",
-    padding: "2px 8px",
+    backgroundColor: chordBackgroundColor,
+    color: chordColor,
+    fontWeight: 500,
     textAlign: "center",
     flexGrow: 1
   }}> {chord.name} </div>

@@ -53,8 +53,7 @@ let parseLine = line => {
     return makeBar({
       voices: [
         parseHarmony(harmony),
-        ...(lyric ? [makeLyric({ text: lyric })] : []),
-        makeRecording({}),
+        ...(lyric ? [makeLyric({ text: lyric })] : [])
       ]
     })
   }
@@ -75,7 +74,6 @@ test(({ is, ok }) => {
         ],
       }),
       makeLyric({ text: "hello" }),
-      makeRecording({ }),
     ]
   }))
 
@@ -84,7 +82,6 @@ test(({ is, ok }) => {
       makeHarmony({
         chords: [makeChord({ name: chordName })]
       }),
-      makeRecording({}),
     ]
   })
 
