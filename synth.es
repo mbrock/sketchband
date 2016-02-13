@@ -29,7 +29,7 @@ let notes =
   noteNames.split(" ").map(x => teoria.note(x))
   
 let chordTypes =
-  ["", "7", "m", "m7", "m/C", "/C", "/E", "/A", "maj7"]
+  ["", "7", "m", "/C", "/E", "/A", "maj7", "sus", "sus/C", "sus/F"]
 let chords =
   concat(notes.map(note => chordTypes.map(type => note.chord(type))))
 

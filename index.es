@@ -31,7 +31,7 @@ const lyricColor = headerColor
 const chordBackgroundColor = "#ccc"
 const chordColor = "#333"
 
-let demo = () => <Demo tab={parse(rolling)} />
+let demo = () => <Demo tab={parse(revelator)} />
 
 requestAnimationFrame(() => {
   let div = document.createElement("div")
@@ -46,8 +46,8 @@ requestAnimationFrame(() => {
 var { parse } = require("./tab.es")
 var { scheduleSong } = require("./schedule.es")
 var { synthesizeChords } = require("./synth.es")
-var { rolling } = require("./demo.es")
-var { audioContext, playSchedule } = require("./audio.es")
+var { rolling, revelator } = require("./demo.es")
+var { audioContext, playSchedule, toggleMute } = require("./audio.es")
 var { Pixie } = require("./pixie.es")
 
 let secondsPerBar =
@@ -205,11 +205,16 @@ let Demo = React.createClass({
 
   render() {
     if (this.state.samples)
-      return <Song
-        context={defaultContext}
-        t={this.state.t}
-        {...this.props.tab}
-       />
+      return (
+        <div>
+          <button onClick={toggleMute}>Toggle mute</button>
+          <Song
+            context={defaultContext}
+            t={this.state.t}
+            {...this.props.tab}
+           />
+       </div>
+     )
     else
       return <div>
         <style dangerouslySetInnerHTML={{

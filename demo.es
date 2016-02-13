@@ -1,3 +1,124 @@
+export let revelator = `# intro
+Am Am
+F F
+Dsus Dsus
+Dsus/F Dsus/F
+Am Am
+F F
+Dsus Dsus
+Dsus/F Dsus/F
+
+# verse 1
+Am Am | ...darling
+F F | remember
+Dsus Dsus | when you
+Dsus/F Dsus/F | come to me
+Am Am | ...that I'm the pre-
+F F | -tender, and
+Dsus Dsus | not what I'm sup-
+Dsus/F Dsus/F | -posed to be
+Dm Dm | but who could
+F F | know if I'm a
+C C | traitor
+G G | time's the reve-
+Dm Dm | -lator...
+F F | ...
+
+# verse 2
+Am Am | ...they caught the
+F F | katy
+Dsus Dsus | and left me a
+Dsus/F Dsus/F | mule to ride
+Am Am | ...the fortune
+F F | lady, she
+Dsus Dsus | came along, she
+Dsus/F Dsus/F | walked beside
+Dm Dm | ...but every
+F F | word seemed to
+C C | date her
+G G | time's the reve-
+Dm Dm | -lator
+F F | the reve-
+G G | lator
+G G
+
+# instrumental
+Am Am
+F F
+Dsus Dsus
+Dsus/F Dsus/F
+Am Am
+F F
+Dsus Dsus
+Dsus/F Dsus/F
+
+# verse 3
+Am Am | up in the
+F F | morning
+Dsus Dsus | up and
+Dsus/F Dsus/F | on the ride
+Am Am | I drive into
+F F | Corning
+Dsus Dsus | and all the
+Dsus/F Dsus/F | spindles whine
+Dm Dm | and every
+F F | day is getting
+C C | straighter
+G G | time's the reve-
+Dm Dm | -lator
+F F | the reve-
+G G | lator
+G G
+
+# instrumental
+Am Am
+F F
+Dsus Dsus
+Dsus/F Dsus/F
+Am Am
+F F
+Dsus Dsus
+Dsus/F Dsus/F
+
+# verse 4
+Am Am | leaving the
+F F | valley
+Dsus Dsus | and fucking
+Dsus/F Dsus/F | out of sight
+Am Am | I'll go back to
+F F | Cali, where
+Dsus Dsus | I can sleep out
+Dsus/F Dsus/F | every night
+Dm Dm | and watch the
+F F | waves and move the
+C C | faders
+G G | time's the reve-
+Dm Dm | -lator
+F F | the reve-
+G G | -lator
+G G
+
+# awesome outro verse
+Dm Dm | queen of
+F F | fakes and imi-
+C C | -tatooooors
+G G | time's the reve-
+Dm Dm | -lator
+F F
+
+# outro
+Am Am
+F F
+Dsus Dsus
+Dsus/F Dsus/F
+Am Am
+F F
+Dsus Dsus
+Dsus/F Dsus/F
+`
+
+// c c# d d# e f f# g g# a a# b
+
 export let rolling = `# intro
 Am
 Em

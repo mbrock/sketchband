@@ -19,6 +19,19 @@
 export let audioContext =
   new (window.AudioContext || window.webkitAudioContext)()
 
+let gainNode = audioContext.createGain()
+
+requestAnimationFrame(() => {
+  let x = localStorage.getItem("gain")
+  gainNode.gain.value = x === null ? 1 : +x
+})
+
+export let toggleMute = () => {
+  let gain = gainNode.gain.value > 0 ? 0 : 1
+  gainNode.gain.value = gain
+  localStorage.setItem("gain", gain)
+}
+
 export let playSchedule =
   (samples, { schedule }) => schedule.events.forEach(
     ({ play }, i) => {
@@ -29,6 +42,7 @@ export let playSchedule =
 let playBuffer = (buffer, delay) => {
   let source = audioContext.createBufferSource()
   source.buffer = buffer
-  source.connect(audioContext.destination)
+  source.connect(gainNode)
+  gainNode.connect(audioContext.destination)
   source.start(audioContext.currentTime + delay)
 }
