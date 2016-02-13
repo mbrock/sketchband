@@ -1,0 +1,25 @@
+{
+  "name": "sketchband",
+  "version": "0.1.0",
+  "dependencies": {
+    "adsr": "*",
+    "babel-core": "*",
+    "babel-loader": "*",
+    "babel-plugin-transform-object-rest-spread": "*",
+    "babel-plugin-syntax-do-expressions": "*",
+    "babel-plugin-syntax-async-functions": "*",
+    "babel-plugin-transform-regenerator": "*",
+    "babel-polyfill": "*",
+    "babel-preset-es2015": "*",
+    "babel-preset-react": "*",
+    "babel-runtime": "*",
+    "color": "*",
+    "html-webpack-plugin": "*",
+    "react": "*",
+    "react-dom": "*",
+    "teoria": "*",
+    "util-inspect": "*",
+    "webpack": "*",
+    "webpack-dev-server": "*"
+  }
+}
