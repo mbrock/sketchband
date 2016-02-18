@@ -31,18 +31,6 @@ const lyricColor = headerColor
 const chordBackgroundColor = "#ccc"
 const chordColor = "#333"
 
-let demo = () => <Demo tab={parse(revelator)} />
-
-requestAnimationFrame(() => {
-  let div = document.createElement("div")
-  document.body.appendChild(div)
-  document.body.style.font =
-    "16px/24px 'helvetica neue', helvetica, arial, sans-serif"
-  document.body.style.backgroundColor = backgroundColor
-  document.body.style.margin = "1rem"
-  ReactDOM.render(demo(), div)
-})
-
 var { parse } = require("./tab.es")
 var { scheduleSong } = require("./schedule.es")
 var { synthesizeChords } = require("./synth.es")
@@ -183,6 +171,17 @@ let trackAudioTime = f => {
   requestAnimationFrame(frame)
 }
 
+let Manager = React.createClass({
+  render: function() {
+    return (
+      <div>
+        You are inside of an unimplemented feature. You can go <a href="#">back</a> or
+        stay here and enjoy the view.
+      </div>
+    )
+  }
+})
+
 let Demo = React.createClass({
   getInitialState: () => ({
     samples: null,
@@ -204,10 +203,15 @@ let Demo = React.createClass({
   },
 
   render() {
-    if (this.state.samples)
+    if (this.props.hash == "#manage") {
+      return <Manager/>
+    } else if (this.state.samples)
       return (
         <div>
-          <button onClick={toggleMute}>Toggle mute</button>
+          <button onClick={toggleMute} style={{ marginRight: "1rem" }}>
+            Toggle mute
+          </button>
+          <a href="#manage">Manage songs</a>
           <Song
             context={defaultContext}
             t={this.state.t}
@@ -224,3 +228,16 @@ let Demo = React.createClass({
       </div>
   }
 })
+
+let demo = props => <Demo tab={parse(revelator)} {...props} />
+let div = document.createElement("div")
+document.body.appendChild(div)
+document.body.style.font =
+  "16px/24px 'helvetica neue', helvetica, arial, sans-serif"
+document.body.style.backgroundColor = backgroundColor
+document.body.style.margin = "1rem"
+
+onhashchange = () =>
+  ReactDOM.render(demo({ hash: location.hash }), div)
+
+onhashchange()

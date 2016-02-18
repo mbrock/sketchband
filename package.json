@@ -15,6 +15,7 @@
     "babel-runtime": "*",
     "color": "*",
     "html-webpack-plugin": "*",
+    "pouchdb": "*",
     "react": "*",
     "react-dom": "*",
     "teoria": "*",
