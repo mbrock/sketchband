@@ -36,10 +36,17 @@ export let Manager = React.createClass({
   },
 
   componentWillReceiveProps: function(next) {
-    if (this.state.song == null && next.songs.length > 0) {
+    if (this.props.hash == "" && this.state.song == null && next.songs.length > 0) {
       this.setState({ song: next.songs[0] })
-    } else if (this.state.song && next.songs) {
-      this.setState({ song: next.songs.filter(x => x._id == this.state.song._id)[0] })
+    }
+    
+    if (next.hash.match(/^#(.+)$/)) {
+      let id = next.hash.substr(1)
+      if (this.state.song == null || this.state.song._id !== id) {
+        this.setState({ song: next.songs.filter(x => x._id === id)[0] })
+      } else if (this.state.song && next.songs) {
+        this.setState({ song: next.songs.filter(x => x._id == this.state.song._id)[0] })
+      }
     }
   },
 
@@ -153,9 +160,7 @@ export let Manager = React.createClass({
   },
 
   changeSelectedSong: function(event) {
-    this.setState({
-      song: this.props.songs.filter(x => x._id == event.target.value)[0]
-    })
+    location.hash = `#${event.target.value}`
   },
 
   changeTitle: function(event) {

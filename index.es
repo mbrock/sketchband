@@ -62,7 +62,14 @@ let App = React.createClass({
   // },
 
   render() {
-    return <Manager songs={this.props.songs} db={db} syncUrl={this.props.syncUrl} />
+    return (
+      <Manager
+        hash={this.props.hash}
+        songs={this.props.songs}
+        db={db}
+        syncUrl={this.props.syncUrl}
+      />
+    )
   }
 })
 
@@ -91,7 +98,7 @@ let db = new PouchDB("sketch.band")
 db.allDocs({ include_docs: true }).then(function(result) {
   setAppState({
     ...appState,
-    songs: result.rows.map(x => x.doc)
+    songs: result.rows.map(x => x.doc),
   })
 
   if (localStorage.getItem("sync-url")) {
