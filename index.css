@@ -18,7 +18,7 @@ input { margin-right: 0.5rem; }
 
 textarea { display: block; width: 100%; padding: 0.5rem 1rem; }
 textarea { border: none; }
-textarea:focus { outline: 0; }
+*:focus { outline: 0; }
 
 .sheet { border: none; padding: 0.5rem 1rem; }
 

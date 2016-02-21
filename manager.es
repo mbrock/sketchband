@@ -67,11 +67,15 @@ export let Manager = React.createClass({
     ) : null
 
     let newSong = (
-      <button
-        onClick={this.newSong}
-      >
+      <button onClick={this.newSong}>
         New song
       </button>
+    )
+
+    let rename = (
+      this.state.song
+        ? <button onClick={this.rename}>Rename</button>
+        : null
     )
 
     let songEditor = (
@@ -85,6 +89,7 @@ export let Manager = React.createClass({
         <div className="manager-toolbar">
           { select }
           { newSong }
+          { rename }
           { sync }
         </div>
         { songEditor }
@@ -120,12 +125,26 @@ export let Manager = React.createClass({
 
   newSong: function() {
     console.log("Posting")
+    let author = prompt("Author")
+    if (!author) return
+    let title = prompt("Title")
+    if (!title) return
     this.props.db.post({
-      title: "Untitled",
-      author: "Unknown",
+      title: title,
+      author: author,
       format: "bar-lines-v1",
       content: ""
     })
+  },
+
+  rename: function() {
+    let author = prompt("Author")
+    if (!author) return
+    let title = prompt("Title")
+    if (!title) return
+    this.setState({
+      song: { ...this.state.song, author, title }
+    }, this.save)
   },
 
   save: function() {
