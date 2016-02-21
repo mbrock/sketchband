@@ -32,8 +32,6 @@ textarea { border: none; }
 
 .harmony { display: flex; }
 
-.chord, .lyric { flex-grow: 1; text-align: center; }
-
 .chord { min-width: 3rem; }
 .chord { padding: 0 0.25rem; }
 .chord { font-weight: bold; }
