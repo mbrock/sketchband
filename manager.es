@@ -125,8 +125,8 @@ export let Manager = React.createClass({
     let syncUrl = prompt("Enter sync URL")
     this.setState({ syncUrl })
     if (syncUrl !== localStorage.getItem("sync-url")) {
-      localStorage.setItem("sync-url", event.target.value)
-      PouchDB.sync("sketch.band", event.target.value, { live: true })
+      localStorage.setItem("sync-url", syncUrl)
+      PouchDB.sync("sketch.band", syncUrl, { live: true })
     }
   },
 
