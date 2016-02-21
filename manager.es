@@ -44,24 +44,17 @@ export let Manager = React.createClass({
   },
 
   render: function() {
-    let syncUrl = (
-      <input
-        style={{
-          display: "block",
-          marginTop: "1rem",
-          width: "20rem",
-          font: "inherit"
-        }}
-        value={this.state.syncUrl}
-        placeholder="Sync URL"
-        onChange={this.changeSyncUrl}
-        onBlur={this.saveSyncUrl}
-      />
+    let sync = (
+      <button
+        disabled={this.props.syncUrl != null}
+        onClick={this.startSyncing}
+      >{
+        this.props.syncUrl ? "Syncing..." : "Sync"
+      }</button>
     )
 
     let select = this.state.song ? (
       <select
-        style={{ font: "inherit" }}
         value={this.state.song._id}
         onChange={this.changeSelectedSong}
       >{
@@ -75,10 +68,6 @@ export let Manager = React.createClass({
 
     let newSong = (
       <button
-        style={{
-          marginLeft: "1rem",
-          font: "inherit",
-        }}
         onClick={this.newSong}
       >
         New song
@@ -92,11 +81,12 @@ export let Manager = React.createClass({
     )
 
     return (
-      <div>
-        <a style={{ display: "block" }} href="#">Back</a>
-        { syncUrl }
-        { select }
-        { newSong }
+      <div className="manager">
+        <div className="manager-toolbar">
+          { select }
+          { newSong }
+          { sync }
+        </div>
         { songEditor }
       </div>
     )
@@ -105,47 +95,27 @@ export let Manager = React.createClass({
   renderSongEditor: function() {
     let song = this.state.song
     return (
-      <div>
-        <input
-          style={{ font: "inherit" }}
-          value={song.title}
-          onChange={this.changeTitle}
-          onBlur={this.save}
-        />
-        <input
-          style={{ font: "inherit" }}
-          value={song.author}
-          onChange={this.changeAuthor}
-          onBlur={this.save}
-        />
-        <textarea
-          style={{
-            display: "block",
-            marginTop: "1rem",
-            width: "100%",
-            fontSize: "inherit",
-            fontFamily: "courier",
-          }}
-          value={song.content}
-          rows={20}
-          onChange={this.changeContent}
-          onBlur={this.save}
-        />
-        <Song context={defaultContext} t={0} {...parse(song.content)} />
+      <div className="song-editor">
+        <div className="song-editor-content">
+          <textarea
+            className="song-editor-content-text"
+            value={song.content}
+            onChange={this.changeContent}
+            onBlur={this.save}
+          />
+          <Song context={defaultContext} t={0} {...parse(song.content)} />
+        </div>
       </div>
     )
   },
 
-  changeSyncUrl: function(event) {
-    let syncUrl = event.target.value
+  startSyncing: function() {
+    let syncUrl = prompt("Enter sync URL")
     this.setState({ syncUrl })
     if (syncUrl !== localStorage.getItem("sync-url")) {
       localStorage.setItem("sync-url", event.target.value)
+      PouchDB.sync("sketch.band", event.target.value, { live: true })
     }
-  },
-
-  saveSyncUrl: function(event) {
-    PouchDB.sync("sketch.band", event.target.value, { live: true })
   },
 
   newSong: function() {

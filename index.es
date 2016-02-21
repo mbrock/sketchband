@@ -20,14 +20,12 @@ var React = require("react")
 var ReactDOM = require("react-dom")
 var PouchDB = require("pouchdb")
 
-var { backgroundColor } = require("./colors.es")
-var { parse } = require("./tab.es")
+require("./index.css")
+
 var { scheduleSong } = require("./schedule.es")
 var { synthesizeChords } = require("./synth.es")
-var { rolling, revelator } = require("./demo.es")
 var { audioContext, playSchedule, toggleMute } = require("./audio.es")
 var { Manager } = require("./manager.es")
-var { Song } = require("./sheet.es")
 
 let defaultContext = {
   beatsPerBar: 4,
@@ -48,64 +46,35 @@ let trackAudioTime = f => {
   requestAnimationFrame(frame)
 }
 
-let Demo = React.createClass({
-  getInitialState: () => ({
-    samples: null,
-    t: 0,
-  }),
-
-  componentWillMount: function() {
-    // setTimeout(async () => {
-    //   await this.setState({
-    //     samples: await synthesizeChords(audioContext)
-    //   })
+let App = React.createClass({
+  // componentWillMount: function() {
+  //   setTimeout(async () => {
+  //     await this.setState({
+  //       samples: await synthesizeChords(audioContext)
+  //     })
       
-    //   trackAudioTime(t => this.setState({ t: t }))
-    //   playSchedule(
-    //     this.state.samples,
-    //     scheduleSong(defaultContext, this.props.tab)
-    //   )
-    // }, 0)
-  },
+  //     trackAudioTime(t => this.setState({ t: t }))
+  //     playSchedule(
+  //       this.state.samples,
+  //       scheduleSong(defaultContext, this.props.tab)
+  //     )
+  //   }, 0)
+  // },
 
   render() {
-    if (this.props.hash == "#manage") {
-      return <Manager songs={this.props.songs} db={db} />
-    } else if (true)
-      return (
-        <div>
-          <button onClick={toggleMute} style={{ marginRight: "1rem" }}>
-            Toggle mute
-          </button>
-          <a href="#manage">Manage songs</a>
-          <Song
-            context={defaultContext}
-            t={this.state.t}
-            {...this.props.tab}
-           />
-       </div>
-     )
-    else
-      return <div>
-        <style dangerouslySetInnerHTML={{
-          __html: require("./spinner.es").spinner
-        }}/>
-        <div className="loader">Synthesizing chord sounds...</div>
-      </div>
+    return <Manager songs={this.props.songs} db={db} syncUrl={this.props.syncUrl} />
   }
 })
 
-let app = props => <Demo tab={parse(revelator)} {...props} />
+let app = props => <App {...props} />
 let div = document.createElement("div")
+div.classList.add("app")
 document.body.appendChild(div)
-document.body.style.font =
-  "16px/24px 'helvetica neue', helvetica, arial, sans-serif"
-document.body.style.backgroundColor = backgroundColor
-document.body.style.margin = "1rem"
 
 let appState = {
   hash: location.hash,
   songs: [],
+  syncUrl: localStorage.getItem("sync-url"),
 }
 
 function setAppState(state) {

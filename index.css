@@ -1,0 +1,59 @@
+* { box-sizing: border-box; }
+
+html, body { height: 100%; width: 100%; overflow: hidden; }
+
+.app { position: absolute; overflow: hidden; top: 0; left: 0; right: 0; bottom: 0; }
+
+body { font: 24px/32px "BlinkMacSystemFont", helvetica, sans-serif; }
+body { margin: 0; }
+
+input, select, button, textarea { font: inherit; }
+
+select { -webkit-appearance: none; }
+select, input { padding: 0.25rem 0.5rem; }
+select { border-radius: 0; }
+
+input, textarea { font-family: courier; }
+input { margin-right: 0.5rem; }
+
+textarea { display: block; width: 100%; padding: 0.5rem 1rem; }
+textarea { border: none; }
+textarea:focus { outline: 0; }
+
+.sheet { border: none; padding: 0.5rem 1rem; }
+
+.bar-sequence { margin-bottom: 0.5rem; }
+.bar-sequence-name { text-transform: uppercase; font-size: smaller; }
+.bar-sequence-bars { display: flex; flex-wrap: wrap; }
+
+.bar { border: 1px solid #aaa; border-radius: 0.25rem; }
+.bar { margin: 0 0.5rem 0.5rem 0; }
+.bar { padding: 0.25rem 0.5rem; }
+
+.harmony { display: flex; }
+
+.chord, .lyric { flex-grow: 1; text-align: center; }
+
+.chord { min-width: 3rem; }
+.chord { padding: 0 0.25rem; }
+.chord { font-weight: bold; }
+
+.manager-toolbar { background: antiquewhite; }
+.manager-toolbar > * { background: cornsilk; border: 1px solid #ccc; }
+.manager-toolbar select { font-weight: bold; }
+
+.manager-toolbar { flex-shrink: 0; display: flex; justify-content: space-between; }
+.manager-toolbar { padding: 0.5rem 1rem; }
+
+.manager { display: flex; flex-direction: column; }
+.manager { height: 100%; width: 100%; }
+
+.song-editor { height: 100%; overflow: hidden; }
+.song-editor-content { height: 100%; display: flex; flex-direction: column; }
+.song-editor-content-text { flex: 1 0; }
+
+.sheet { height: 100%; overflow: scroll; }
+.sheet { flex: 3 0; padding-bottom: 4rem; }
+.sheet { background: ivory; }
+
+.song-editor-content-text { background: dimgrey; color: ivory; }

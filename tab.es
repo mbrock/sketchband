@@ -48,8 +48,8 @@ let parseSong = lines => {
 }
 
 let parseLine = line => {
-  if (/^([^|]+)(?:\| (.*))?$/.test(line)) {
-    let [harmony, lyric] = [RegExp.$1, RegExp.$2]
+  if (/^([^|]+)(?:\|(.*))?$/.test(line)) {
+    let [harmony, lyric] = [RegExp.$1, RegExp.$2.trim()]
     return makeBar({
       voices: [
         parseHarmony(harmony),
