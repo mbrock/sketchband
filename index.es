@@ -18,7 +18,7 @@
 
 var React = require("react")
 var ReactDOM = require("react-dom")
-
+var PouchDB = require("pouchdb")
 let color = require("color")
 
 let lessOpaque = (x, n) => color(x).clearer(n).hslString()
@@ -37,6 +37,7 @@ var { synthesizeChords } = require("./synth.es")
 var { rolling, revelator } = require("./demo.es")
 var { audioContext, playSchedule, toggleMute } = require("./audio.es")
 var { Pixie } = require("./pixie.es")
+var { Manager } = require("./manager.es")
 
 let secondsPerBar =
   ({ beatsPerBar, bpm }) =>
@@ -87,8 +88,6 @@ let Bar = ({ t, bar }) =>
   <div style={{
     position: "relative", marginBottom: "1rem",
   }}>
-    {(t >= 0 && t <= 1) &&
-      <Pixie duration={secondsPerBar(defaultContext)}/> }
     <div style={{
       ...((t >= 0 && t <= 1) ? {
         // Mario block bounce.
@@ -171,17 +170,6 @@ let trackAudioTime = f => {
   requestAnimationFrame(frame)
 }
 
-let Manager = React.createClass({
-  render: function() {
-    return (
-      <div>
-        You are inside of an unimplemented feature. You can go <a href="#">back</a> or
-        stay here and enjoy the view.
-      </div>
-    )
-  }
-})
-
 let Demo = React.createClass({
   getInitialState: () => ({
     samples: null,
@@ -189,23 +177,23 @@ let Demo = React.createClass({
   }),
 
   componentWillMount: function() {
-    setTimeout(async () => {
-      await this.setState({
-        samples: await synthesizeChords(audioContext)
-      })
+    // setTimeout(async () => {
+    //   await this.setState({
+    //     samples: await synthesizeChords(audioContext)
+    //   })
       
-      trackAudioTime(t => this.setState({ t: t }))
-      playSchedule(
-        this.state.samples,
-        scheduleSong(defaultContext, this.props.tab)
-      )
-    }, 0)
+    //   trackAudioTime(t => this.setState({ t: t }))
+    //   playSchedule(
+    //     this.state.samples,
+    //     scheduleSong(defaultContext, this.props.tab)
+    //   )
+    // }, 0)
   },
 
   render() {
     if (this.props.hash == "#manage") {
-      return <Manager/>
-    } else if (this.state.samples)
+      return <Manager songs={this.props.songs} db={db} />
+    } else if (true)
       return (
         <div>
           <button onClick={toggleMute} style={{ marginRight: "1rem" }}>
@@ -229,7 +217,7 @@ let Demo = React.createClass({
   }
 })
 
-let demo = props => <Demo tab={parse(revelator)} {...props} />
+let app = props => <Demo tab={parse(revelator)} {...props} />
 let div = document.createElement("div")
 document.body.appendChild(div)
 document.body.style.font =
@@ -237,7 +225,45 @@ document.body.style.font =
 document.body.style.backgroundColor = backgroundColor
 document.body.style.margin = "1rem"
 
-onhashchange = () =>
-  ReactDOM.render(demo({ hash: location.hash }), div)
+let appState = {
+  hash: location.hash,
+  songs: [],
+}
 
-onhashchange()
+function setAppState(state) {
+  appState = state
+  ReactDOM.render(app(state), div)
+}
+
+onhashchange = () =>
+  setAppState({ ...appState, hash: location.hash })
+
+setAppState(appState)
+
+let db = new PouchDB("sketch.band")
+db.allDocs({ include_docs: true }).then(function(result) {
+  setAppState({
+    ...appState,
+    songs: result.rows.map(x => x.doc)
+  })
+  
+  db.changes({
+    live: true,
+    include_docs: true,
+  }).on("change", function(change) {
+    console.log("change", change)
+    if (appState.songs.filter(x => x._id === change.id).length > 0) {
+      setAppState({
+        ...appState,
+        songs: appState.songs.map(x => x._id === change.id ? change.doc : x)
+      })
+    } else {
+      setAppState({
+        ...appState,
+        songs: [...appState.songs, change.doc]
+      })
+    }
+  })
+})
+
+window.db = db
