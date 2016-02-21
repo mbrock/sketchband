@@ -19,142 +19,20 @@
 var React = require("react")
 var ReactDOM = require("react-dom")
 var PouchDB = require("pouchdb")
-let color = require("color")
 
-let lessOpaque = (x, n) => color(x).clearer(n).hslString()
-
-const backgroundColor = "#fcfcfc"
-const inactiveBarColor = "white"
-const activeBarColor = "#ddd"
-const headerColor = "#333"
-const lyricColor = headerColor
-const chordBackgroundColor = "#ccc"
-const chordColor = "#333"
-
+var { backgroundColor } = require("./colors.es")
 var { parse } = require("./tab.es")
 var { scheduleSong } = require("./schedule.es")
 var { synthesizeChords } = require("./synth.es")
 var { rolling, revelator } = require("./demo.es")
 var { audioContext, playSchedule, toggleMute } = require("./audio.es")
-var { Pixie } = require("./pixie.es")
 var { Manager } = require("./manager.es")
-
-let secondsPerBar =
-  ({ beatsPerBar, bpm }) =>
-    beatsPerBar / (bpm / 60)
-
-let adjust = (context, t, i) =>
-  t / secondsPerBar(context) - i
+var { Song } = require("./sheet.es")
 
 let defaultContext = {
   beatsPerBar: 4,
   bpm: 100,
 }
-
-let Song = ({ context, song, t }) => {
-  var accumulatedDelay = 0
-  return <div> {
-    song.barSequences.map(x => {
-      let tag = <BarSequence
-        context={context}
-        t={t - accumulatedDelay}
-        {...x} />
-      accumulatedDelay +=
-        secondsPerBar(context) * x.barSequence.bars.length
-      return tag
-    })
-  } </div>
-}
-
-let BarSequence = ({ context, barSequence, t }) =>
-  <div>
-    <div style={{
-      textTransform: "uppercase",
-      marginTop: ".5rem",
-      marginBottom: ".5rem",
-      color: headerColor,
-    }}>{barSequence.name}</div>
-    <div style={{
-      display: "flex",
-      flexDirection: "row",
-      flexWrap: "wrap",
-    }}>
-      {barSequence.bars.map(
-        (x, i) => <Bar t={adjust(context, t, i)} {...x}/>)}
-    </div>
-  </div>
-
-let Bar = ({ t, bar }) =>
-  <div style={{
-    position: "relative", marginBottom: "1rem",
-  }}>
-    <div style={{
-      ...((t >= 0 && t <= 1) ? {
-        // Mario block bounce.
-        WebkitAnimation: `pixiedown
-          ${secondsPerBar(defaultContext)}s
-          linear infinite`
-      } : {}),
-      border: "1px solid #aaa",
-      minWidth: "8rem",
-      transition: `${0.25 * secondsPerBar(defaultContext)}s ease-out all`,
-      backgroundColor:
-        (t >= 0 && t < 1) ? activeBarColor :
-          (t < 0 ? inactiveBarColor : lessOpaque(inactiveBarColor, 0.3)),
-    }}>
-      {bar.voices.map(x => <Voice t={t} voice={x}/>)}
-    </div>
-  </div>
-
-let Voice = ({ t, voice }) =>
-  <div>
-    {voice.harmony ? <Harmony {...voice}/> : (
-       voice.lyric ? <Lyric {...voice}/> : (
-         voice.recording ? <Recording t={t} {...voice}/> : null
-     ))}
-  </div>
-
-let Harmony = ({ harmony }) =>
-  <div style={{ display: "flex", justifyContent: "space-between" }}>
-    {harmony.chords.map(x => <Chord {...x}/>)}
-  </div>
-
-let Lyric = ({ lyric }) =>
-  <div style={{
-    textAlign: "center",
-    margin: "0 .5rem",
-    color: lyricColor,
-    fontWeight: 300,
-  }}> {lyric.text} </div>
-
-let Recording = ({ t }) => {
-  let progress = (
-    <div style={{
-      width: t < 0 ? 0 : "100%",
-      WebkitAnimation:
-        (t >= 0 && t < 1) &&
-          `flyfill ${secondsPerBar(defaultContext)}s linear infinite`
-    }}>
-      <div style={{
-        borderTop: "1px solid rgba(0, 0, 0, 0.1)",
-        height: "0.5rem",
-        background: lessOpaque("black", 0.9),
-      }}/>
-    </div>
-  )
-  return <div style={{
-    backgroundColor: lessOpaque(backgroundColor, 0.8),
-  }}> {progress} </div>
-}
-  
-let Chord = ({ chord }) =>
-  <div style={{
-    backgroundColor: chordBackgroundColor,
-    color: chordColor,
-    fontWeight: 500,
-    textAlign: "center",
-    flexGrow: 1
-  }}> {chord.name} </div>
 
 let trackAudioTime = f => {
   let t0 = audioContext.currentTime
