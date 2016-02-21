@@ -246,7 +246,11 @@ db.allDocs({ include_docs: true }).then(function(result) {
     ...appState,
     songs: result.rows.map(x => x.doc)
   })
-  
+
+  if (localStorage.getItem("sync-url")) {
+    PouchDB.sync("sketch.band", localStorage.getItem("sync-url"), { live: true })
+  }
+
   db.changes({
     live: true,
     include_docs: true,
