@@ -32,9 +32,9 @@ let parseSong = lines => {
   var barSequences = []
   var current = makeBarSequence({ name: "Fragment", bars: [] })
   for (var i = 0; i < lines.length; i++) {
-    if (/^#(.*)\s*$/.test(lines[i])) {
+    if (/^#\s*(.*)\s*$/.test(lines[i])) {
       if (i == 0)
-        current.barSequence.name = RegExp.$1.trim()
+        current.barSequence.name = RegExp.$1
       else {
         barSequences.push(current)
         current = makeBarSequence({ name: RegExp.$1, bars: [] })
