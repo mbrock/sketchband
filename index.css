@@ -69,3 +69,10 @@ textarea { border: none; }
 .sheet { background: ivory; }
 
 .song-editor-content-text { background: dimgrey; color: ivory; }
+
+@media (max-width: 600px) {
+  body { font-size: 14px; line-height: 18px; }
+  .bar { margin: 0; border: 0; }
+  .toolbar-buttons { flex-wrap: wrap; }
+  .toolbar-buttons > * { border-width: 1px; }
+}

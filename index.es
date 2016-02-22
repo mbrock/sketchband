@@ -77,6 +77,9 @@ let app = props => <App {...props} />
 let div = document.createElement("div")
 div.classList.add("app")
 document.body.appendChild(div)
+document.head.innerHTML += (
+  '<meta name=viewport content="width=device-width, initial-scale=1">'
+)
 
 let appState = {
   hash: location.hash,
