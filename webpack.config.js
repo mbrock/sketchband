@@ -1,4 +1,5 @@
 var webpack = require("webpack")
+var html = require("html-webpack-plugin")
 module.exports = {
   entry: ["babel-polyfill", "./index.es"],
   output: {
@@ -6,7 +7,10 @@ module.exports = {
     filename: "bundle.js"
   },
   plugins: [
-    new require("html-webpack-plugin"),
+    new html({
+      template: "index.html.ejs",
+      inject: "body",
+    }),
   ],
   devtool: "source-map",
   module: {
