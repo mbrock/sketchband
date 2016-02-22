@@ -161,6 +161,8 @@ export let Manager = React.createClass({
       author: author,
       format: "bar-lines-v1",
       content: ""
+    }).then(function(doc) {
+      location.hash = doc.id
     })
   },
 
