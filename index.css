@@ -47,7 +47,7 @@ textarea { border: none; }
 .toolbar-song-picker { flex-grow: 3; }
 .toolbar-buttons { flex-grow: 1; }
 
-.toolbar-buttons { display: flex; justify-content: space-between; }
+.toolbar-buttons { display: flex; justify-content: flex-end; }
 .toolbar-buttons > * { margin: 0 .25rem; min-width: 7rem; }
 .toolbar-buttons > * { background: #ddd; border: 3px outset #efefef; }
 
@@ -73,6 +73,6 @@ textarea { border: none; }
 @media (max-width: 600px) {
   body { font-size: 12px; line-height: 14px; }
   .bar { margin: 0; border: 0; padding-left: 0; }
-  .toolbar-buttons { flex-wrap: wrap; }
+  .toolbar-buttons { flex-wrap: wrap; justify-content: space-between; }
   .toolbar-buttons > * { border-width: 1px; min-width: inherit; }
 }
