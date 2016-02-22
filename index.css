@@ -20,7 +20,7 @@ textarea { display: block; width: 100%; padding: 0.5rem 1rem; }
 textarea { border: none; }
 *:focus { outline: 0; }
 
-.sheet { border: none; padding: 0.5rem 1rem; }
+.sheet { border: none; padding: 0.5rem .5rem; }
 
 .bar-sequence { margin-bottom: 0.5rem; }
 .bar-sequence-name { text-transform: uppercase; font-size: smaller; }
@@ -41,14 +41,14 @@ textarea { border: none; }
 
 .manager-toolbar { flex-shrink: 0; display: flex; justify-content: space-between; }
 .manager-toolbar { flex-wrap: wrap; }
-.manager-toolbar { padding: .5rem .5rem 0 1rem; }
+.manager-toolbar { padding: .5rem .5rem 0 .5rem; }
 .manager-toolbar > * { margin-bottom: .5rem; }
 
 .toolbar-song-picker { flex-grow: 3; }
 .toolbar-buttons { flex-grow: 1; }
 
 .toolbar-buttons { display: flex; justify-content: space-between; }
-.toolbar-buttons > * { margin-left: 1rem; min-width: 7rem; }
+.toolbar-buttons > * { margin: 0 .25rem; min-width: 7rem; }
 .toolbar-buttons > * { background: #ddd; border: 3px outset #efefef; }
 
 .toolbar-buttons > *.pressed { border-style: inset; }
@@ -71,8 +71,8 @@ textarea { border: none; }
 .song-editor-content-text { background: dimgrey; color: ivory; }
 
 @media (max-width: 600px) {
-  body { font-size: 14px; line-height: 18px; }
-  .bar { margin: 0; border: 0; }
+  body { font-size: 12px; line-height: 14px; }
+  .bar { margin: 0; border: 0; padding-left: 0; }
   .toolbar-buttons { flex-wrap: wrap; }
-  .toolbar-buttons > * { border-width: 1px; }
+  .toolbar-buttons > * { border-width: 1px; min-width: inherit; }
 }
