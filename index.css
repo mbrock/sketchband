@@ -37,11 +37,25 @@ textarea { border: none; }
 .chord { font-weight: bold; }
 
 .manager-toolbar { background: antiquewhite; }
-.manager-toolbar > * { background: cornsilk; border: 1px solid #ccc; }
-.manager-toolbar select { font-weight: bold; }
+.toolbar-song-picker { font-weight: bold; background: cornsilk; border: 1px solid #ccc; }
 
 .manager-toolbar { flex-shrink: 0; display: flex; justify-content: space-between; }
-.manager-toolbar { padding: 0.5rem 1rem; }
+.manager-toolbar { flex-wrap: wrap; }
+.manager-toolbar { padding: .5rem .5rem 0 1rem; }
+.manager-toolbar > * { margin-bottom: .5rem; }
+
+.toolbar-song-picker { flex-grow: 3; }
+.toolbar-buttons { flex-grow: 1; }
+
+.toolbar-buttons { display: flex; justify-content: space-between; }
+.toolbar-buttons > * { margin-left: 1rem; min-width: 7rem; }
+.toolbar-buttons > * { background: #ddd; border: 3px outset #efefef; }
+
+.toolbar-buttons > *.pressed { border-style: inset; }
+
+@media (max-width: 800px) {
+  .toolbar-song-picker { width: 100%; }
+}
 
 .manager { display: flex; flex-direction: column; }
 .manager { height: 100%; width: 100%; }

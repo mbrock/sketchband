@@ -31,7 +31,8 @@ export let Manager = React.createClass({
   getInitialState: function() {
     return {
       song: this.props.songs.length > 0 ? this.props.songs[0] : null,
-      syncUrl: localStorage.getItem("sync-url")
+      syncUrl: localStorage.getItem("sync-url"),
+      editing: false,
     }
   },
 
@@ -53,15 +54,15 @@ export let Manager = React.createClass({
   render: function() {
     let sync = (
       <button
+        className={this.props.syncUrl ? "pressed" : null}
         disabled={this.props.syncUrl != null}
         onClick={this.startSyncing}
-      >{
-        this.props.syncUrl ? "Syncing..." : "Sync"
-      }</button>
+      >Sync</button>
     )
 
     let select = this.state.song ? (
       <select
+        className="toolbar-song-picker"
         value={this.state.song._id}
         onChange={this.changeSelectedSong}
       >{
@@ -75,7 +76,7 @@ export let Manager = React.createClass({
 
     let newSong = (
       <button onClick={this.newSong}>
-        New song
+        New
       </button>
     )
 
@@ -84,6 +85,15 @@ export let Manager = React.createClass({
         ? <button onClick={this.rename}>Rename</button>
         : null
     )
+
+    let toggleEdit = this.state.song ? (
+      <button
+        onClick={this.toggleEdit}
+        className={this.state.editing ? "pressed" : null}
+      >
+        Edit
+      </button>
+    ) : null
 
     let songEditor = (
       this.state.song
@@ -95,9 +105,12 @@ export let Manager = React.createClass({
       <div className="manager">
         <div className="manager-toolbar">
           { select }
-          { newSong }
-          { rename }
-          { sync }
+          <div className="toolbar-buttons">
+            { toggleEdit }
+            { rename }
+            { newSong }
+            { sync }
+          </div>
         </div>
         { songEditor }
       </div>
@@ -106,15 +119,18 @@ export let Manager = React.createClass({
 
   renderSongEditor: function() {
     let song = this.state.song
+    let textarea = this.state.editing ? (
+      <textarea
+        className="song-editor-content-text"
+        value={song.content}
+        onChange={this.changeContent}
+        onBlur={this.save}
+      />
+    ) : null
     return (
       <div className="song-editor">
         <div className="song-editor-content">
-          <textarea
-            className="song-editor-content-text"
-            value={song.content}
-            onChange={this.changeContent}
-            onBlur={this.save}
-          />
+          { textarea }
           <Song context={defaultContext} t={0} {...parse(song.content)} />
         </div>
       </div>
@@ -128,6 +144,10 @@ export let Manager = React.createClass({
       localStorage.setItem("sync-url", syncUrl)
       PouchDB.sync("sketch.band", syncUrl, { live: true })
     }
+  },
+
+  toggleEdit: function() {
+    this.setState({ editing: !this.state.editing })
   },
 
   newSong: function() {
