@@ -55,7 +55,6 @@ export let Manager = React.createClass({
     let sync = (
       <button
         className={this.props.syncUrl ? "pressed" : null}
-        disabled={this.props.syncUrl != null}
         onClick={this.startSyncing}
       >Sync</button>
     )
