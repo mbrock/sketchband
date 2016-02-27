@@ -65,7 +65,7 @@ let App = React.createClass({
     return (
       <Manager
         hash={this.props.hash}
-        songs={this.props.songs}
+        songs={this.props.songs.filter(x => !x._deleted)}
         db={db}
         syncUrl={this.props.syncUrl}
       />

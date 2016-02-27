@@ -37,10 +37,6 @@ export let Manager = React.createClass({
   },
 
   componentWillReceiveProps: function(next) {
-    if (this.props.hash == "" && this.state.song == null && next.songs.length > 0) {
-      this.setState({ song: next.songs[0] })
-    }
-    
     if (next.hash.match(/^#(.+)$/)) {
       let id = next.hash.substr(1)
       if (this.state.song == null || this.state.song._id !== id) {
@@ -48,6 +44,15 @@ export let Manager = React.createClass({
       } else if (this.state.song && next.songs) {
         this.setState({ song: next.songs.filter(x => x._id == this.state.song._id)[0] })
       }
+    }
+  },
+
+  componentWillUpdate: function(next) {
+    let noSongChosen     = next.hash == ""
+    let hasSongs         = next.songs.length > 0
+    let chosenSongExists = next.songs.map(x => x._id).includes(next.hash.substr(1))
+    if (hasSongs && (noSongChosen || !chosenSongExists)) {
+      location.hash = next.songs[0]._id
     }
   },
 
@@ -84,6 +89,12 @@ export let Manager = React.createClass({
         ? <button onClick={this.rename}>Rename</button>
         : null
     )
+    
+    let remove = (
+      this.state.song
+        ? <button onClick={this.remove}>Remove</button>
+        : null
+    )
 
     let toggleEdit = this.state.song ? (
       <button
@@ -107,6 +118,7 @@ export let Manager = React.createClass({
           <div className="toolbar-buttons">
             { toggleEdit }
             { rename }
+            { remove }
             { newSong }
             { sync }
           </div>
@@ -173,6 +185,14 @@ export let Manager = React.createClass({
     this.setState({
       song: { ...this.state.song, author, title }
     }, this.save)
+  },
+
+  remove: function() {
+    if (confirm("Remove?")) {
+      this.setState({
+        song: { ...this.state.song, _deleted: true }
+      }, this.save)
+    }
   },
 
   save: function() {
