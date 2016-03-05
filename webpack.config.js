@@ -1,18 +1,33 @@
 var webpack = require("webpack")
 var html = require("html-webpack-plugin")
 module.exports = {
-  entry: ["babel-polyfill", "./index.es"],
+  entry: {
+    index: "./index.es",
+    vendor: [
+      "adsr",
+      "babel-polyfill",
+      "color",
+      "pouchdb",
+      "react",
+      "react-dom",
+      "teoria"
+    ]
+  },
   output: {
     path: require("path").resolve(__dirname, "dist"),
-    filename: "bundle.js"
+    filename: "[name].[chunkhash:12].js"
   },
   plugins: [
     new html({
       template: "index.html.ejs",
       inject: "body",
     }),
+    new webpack.optimize.CommonsChunkPlugin(
+      "vendor",
+      "vendor.[chunkhash:12].js"
+    )
   ],
-  devtool: "source-map",
+  devtool: "inline-source-map",
   module: {
     loaders: [
       {

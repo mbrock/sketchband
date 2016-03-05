@@ -16,6 +16,7 @@
     "color": "*",
     "css-loader": "*",
     "html-webpack-plugin": "*",
+    "http-server": "*",
     "pouchdb": "*",
     "react": "*",
     "react-dom": "*",
