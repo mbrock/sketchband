@@ -16,6 +16,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+if ("serviceWorker" in navigator) {
+  const serviceWorkerAlreadyInstalled = !!navigator.serviceWorker.controller
+  if (serviceWorkerAlreadyInstalled) {
+    navigator.serviceWorker.addEventListener(
+      "message",
+      function() {
+        if (confirm("Load new SketchBand version?")) {
+          location.reload()
+        }
+      }
+    )
+  } else {
+    navigator.serviceWorker.register("service-worker.js").then(
+      function(registration) {
+        alert("SketchBand is ready to work offline.")
+      },
+      function(error) {
+        // This will happen if you don't use HTTPS, for example.
+        console.error(error)
+      }
+    )
+  }
+}
+
 var React = require("react")
 var ReactDOM = require("react-dom")
 var PouchDB = require("pouchdb")
