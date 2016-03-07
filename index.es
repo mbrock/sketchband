@@ -140,9 +140,9 @@ function applyEvent(state, event) {
   }
 }
 
-function dispatch(type, payload = {}) {
-  console.log(new Date, type, payload)
-  setAppState(applyEvent(appState, { type, ...payload }))
+function dispatch(type, payload = {}, timestamp = new Date) {
+  console.log(timestamp, type, payload)
+  setAppState(applyEvent(appState, { type, timestamp, ...payload }))
 }
 
 onhashchange = () =>
