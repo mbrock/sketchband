@@ -23,7 +23,7 @@ var urlsToCache = ASSETS.map(x => `/${x}`)
 
 const rootUrl = (url => {
   url.pathName = "/"
-  return url.url
+  return url.href
 })(new URL(location.href))
 
 self.addEventListener("install",
