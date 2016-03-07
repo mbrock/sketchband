@@ -18,3 +18,15 @@ start-docker-https: build-docker
 	    -C/ssl/live/$(HOSTNAME)/fullchain.pem \
 	    -K/ssl/live/$(HOSTNAME)/privkey.pem \
 	    ./dist
+
+# Serves $(FILES) over HTTPS on port 1967...
+start-file-server:
+	docker run --rm -it \
+	  -p 1967:443 \
+	  -v $(SSL_PATH):/ssl \
+          -v $(FILES):/files \
+	  --name $(NAME)-files $(NAME) \
+	  dumb-init /node_modules/.bin/http-server -p 443 -c 9999 -S \
+	    -C/ssl/live/$(HOSTNAME)/fullchain.pem \
+	    -K/ssl/live/$(HOSTNAME)/privkey.pem \
+	    /files
