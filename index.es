@@ -105,7 +105,7 @@ document.head.innerHTML += (
   '<meta name=viewport content="width=device-width, initial-scale=1">'
 )
 
-let appState = {
+let appState = window.state = {
   hash: location.hash,
   songs: [],
   syncUrl: localStorage.getItem("sync-url"),
@@ -116,17 +116,44 @@ function setAppState(state) {
   ReactDOM.render(app(state), div)
 }
 
-onhashchange = () =>
-  setAppState({ ...appState, hash: location.hash })
+// Custom pseudo-Redux
+function applyEvent(state, event) {
+  switch (event.type) {
+    case "app-loaded":
+      return state
+    case "hash-changed":
+      return { ...state, hash: event.hash }
+    case "songs-loaded":
+      return { ...state, songs: event.songs }
+    case "song-changed":
+      return { ...state,
+        songs: state.songs.map(
+          x => x._id === event.song._id ? event.song : x
+        )
+      }
+    case "song-added":
+      return { ...state,
+        songs: [...state.songs, event.song]
+      }
+    default:
+      throw new Error(`Unhandled event type ${event.type}`)
+  }
+}
 
-setAppState(appState)
+function dispatch(type, payload = {}) {
+  console.log(new Date, type, payload)
+  setAppState(applyEvent(appState, { type, ...payload }))
+}
+
+onhashchange = () =>
+  dispatch("hash-changed", { hash: location.hash })
+
+dispatch("app-loaded")
 
 let db = new PouchDB("sketch.band")
 db.allDocs({ include_docs: true }).then(function(result) {
-  setAppState({
-    ...appState,
-    songs: result.rows.map(x => x.doc),
-  })
+  const songs = result.rows.map(x => x.doc)
+  dispatch("songs-loaded", { songs })
 
   if (localStorage.getItem("sync-url")) {
     PouchDB.sync("sketch.band", localStorage.getItem("sync-url"), { live: true })
@@ -136,17 +163,10 @@ db.allDocs({ include_docs: true }).then(function(result) {
     live: true,
     include_docs: true,
   }).on("change", function(change) {
-    console.log("change", change)
     if (appState.songs.filter(x => x._id === change.id).length > 0) {
-      setAppState({
-        ...appState,
-        songs: appState.songs.map(x => x._id === change.id ? change.doc : x)
-      })
+      dispatch("song-changed", { song: change.doc })
     } else {
-      setAppState({
-        ...appState,
-        songs: [...appState.songs, change.doc]
-      })
+      dispatch("song-added", { song: change.doc })
     }
   })
 })
