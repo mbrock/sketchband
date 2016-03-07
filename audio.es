@@ -26,6 +26,20 @@ requestAnimationFrame(() => {
   gainNode.gain.value = x === null ? 1 : +x
 })
 
+export let trackAudioTime = (context, f) => {
+  let t0 = audioContext.currentTime
+  let i = 0
+  let frame = () => {
+    let j = (audioContext.currentTime - t0) / secondsPerBar(context)
+    if (Math.floor(j) > i) {
+      i = j
+      f(audioContext.currentTime - t0)
+    }
+    requestAnimationFrame(frame)
+  }
+  requestAnimationFrame(frame)
+}
+
 export let toggleMute = () => {
   let gain = gainNode.gain.value > 0 ? 0 : 1
   gainNode.gain.value = gain

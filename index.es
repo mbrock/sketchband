@@ -28,6 +28,8 @@ var { synthesizeChords } = require("./synth.es")
 var { audioContext, playSchedule, toggleMute } = require("./audio.es")
 var { Manager } = require("./manager.es")
 
+const db = new PouchDB("sketch.band")
+
 let appState = window.state = {
   hash: location.hash,
   songs: [],
@@ -58,54 +60,21 @@ function applyEvent(state, event) {
   }
 }
 
-let defaultContext = {
-  beatsPerBar: 4,
-  bpm: 100,
-}
-
-let trackAudioTime = f => {
-  let t0 = audioContext.currentTime
-  let i = 0
-  let frame = () => {
-    let j = (audioContext.currentTime - t0) / secondsPerBar(defaultContext)
-    if (Math.floor(j) > i) {
-      i = j
-      f(audioContext.currentTime - t0)
-    }
-    requestAnimationFrame(frame)
-  }
-  requestAnimationFrame(frame)
-}
-
 let App = React.createClass({
-  // componentWillMount: function() {
-  //   setTimeout(async () => {
-  //     await this.setState({
-  //       samples: await synthesizeChords(audioContext)
-  //     })
-      
-  //     trackAudioTime(t => this.setState({ t: t }))
-  //     playSchedule(
-  //       this.state.samples,
-  //       scheduleSong(defaultContext, this.props.tab)
-  //     )
-  //   }, 0)
-  // },
-
   render() {
-    return (
-      <Manager
-        hash={this.props.hash}
-        songs={this.props.songs.filter(x => !x._deleted)}
-        db={db}
-        syncUrl={this.props.syncUrl}
-      />
-    )
+    let props = {
+      db,
+      hash: this.props.hash,
+      songs: this.props.songs.filter(x => !x._deleted),
+      syncUrl: this.props.syncUrl,
+    }
+    return <Manager {...props} />
   }
 })
 
-let app = props => <App {...props} />
-let div = document.createElement("div")
+const app = props => <App {...props} />
+const div = document.createElement("div")
+
 div.classList.add("app")
 document.body.appendChild(div)
 document.head.innerHTML += (
@@ -127,7 +96,6 @@ onhashchange = () =>
 
 dispatch("app-loaded")
 
-let db = new PouchDB("sketch.band")
 db.allDocs({ include_docs: true }).then(function(result) {
   const songs = result.rows.map(x => x.doc)
   dispatch("songs-loaded", { songs })
