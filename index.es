@@ -17,17 +17,46 @@
  */
 
 require("./use-service-worker.es")
+require("./index.css")
 
 var React = require("react")
 var ReactDOM = require("react-dom")
 var PouchDB = require("pouchdb")
 
-require("./index.css")
-
 var { scheduleSong } = require("./schedule.es")
 var { synthesizeChords } = require("./synth.es")
 var { audioContext, playSchedule, toggleMute } = require("./audio.es")
 var { Manager } = require("./manager.es")
+
+let appState = window.state = {
+  hash: location.hash,
+  songs: [],
+  syncUrl: localStorage.getItem("sync-url"),
+}
+
+// Custom pseudo-Redux
+function applyEvent(state, event) {
+  switch (event.type) {
+    case "app-loaded":
+      return state
+    case "hash-changed":
+      return { ...state, hash: event.hash }
+    case "songs-loaded":
+      return { ...state, songs: event.songs }
+    case "song-changed":
+      return { ...state,
+        songs: state.songs.map(
+          x => x._id === event.song._id ? event.song : x
+        )
+      }
+    case "song-added":
+      return { ...state,
+        songs: [...state.songs, event.song]
+      }
+    default:
+      throw new Error(`Unhandled event type ${event.type}`)
+  }
+}
 
 let defaultContext = {
   beatsPerBar: 4,
@@ -83,39 +112,9 @@ document.head.innerHTML += (
   '<meta name=viewport content="width=device-width, initial-scale=1">'
 )
 
-let appState = window.state = {
-  hash: location.hash,
-  songs: [],
-  syncUrl: localStorage.getItem("sync-url"),
-}
-
 function setAppState(state) {
   appState = state
   ReactDOM.render(app(state), div)
-}
-
-// Custom pseudo-Redux
-function applyEvent(state, event) {
-  switch (event.type) {
-    case "app-loaded":
-      return state
-    case "hash-changed":
-      return { ...state, hash: event.hash }
-    case "songs-loaded":
-      return { ...state, songs: event.songs }
-    case "song-changed":
-      return { ...state,
-        songs: state.songs.map(
-          x => x._id === event.song._id ? event.song : x
-        )
-      }
-    case "song-added":
-      return { ...state,
-        songs: [...state.songs, event.song]
-      }
-    default:
-      throw new Error(`Unhandled event type ${event.type}`)
-  }
 }
 
 function dispatch(type, payload = {}, timestamp = new Date) {
