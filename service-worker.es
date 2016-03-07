@@ -17,6 +17,8 @@
  */
 
 const cacheName = "sketchband-cache-v1"
+const audioCacheName = "sketchband-audio-cache-v1"
+
 var urlsToCache = ASSETS.map(x => `/${x}`)
 
 const rootUrl = (url => {
@@ -43,10 +45,30 @@ self.addEventListener("activate",
 
 self.addEventListener(
   "fetch",
-  event => event.respondWith(cacheWithNetworkFallback(event.request))
+  event => event.respondWith(cachingStrategy(event.request))
 )
 
-const cacheWithNetworkFallback =
+const cachingStrategy =
   request => caches
     .match(request.url === rootUrl ? "/index.html" : request)
-    .then(response => response || fetch(request))
+    .then(response => response || fetchingStrategy(request))
+
+const fetchingStrategy =
+  request => request.url.match(new RegExp("/ipfs/.*$"))
+    ? fetchAndSave(request)
+    : fetch(request)
+
+const fetchAndSave = request =>
+  caches.open(audioCacheName).then(cache => {
+    console.log("Fetching", request)
+    return fetch(request.clone()).then(response => {
+      if (response.status < 400) {
+        console.log("Caching", request)
+        cache.put(request.clone(), response.clone())
+      } else {
+        console.warn("Failed to fetch", request)
+      }
+      return response
+    })
+  })
+  

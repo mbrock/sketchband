@@ -111,10 +111,18 @@ export let Manager = React.createClass({
         : null
     )
 
+    let audioHash = this.state.song && this.state.song["audio-hash"]
+    let audio = (
+      audioHash
+        ? <audio controls src={`https://sketch.band:1967/ipfs/${audioHash}`} />
+        : null
+    )
+
     return (
       <div className="manager">
         <div className="manager-toolbar">
           { select }
+          { audio }
           <div className="toolbar-buttons">
             { toggleEdit }
             { rename }
