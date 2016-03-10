@@ -28,6 +28,12 @@ export let parse =
     barSequences: parseSong(text.split(/\n/).filter(x => x.trim().length))
   })
 
+export let songLength = ({ song }) => {
+  let n = 0
+  song.barSequences.forEach(x => n += x.barSequence.bars.length)
+  return n
+}
+
 let parseSong = lines => {
   var barSequences = []
   var current = makeBarSequence({ name: "Fragment", bars: [] })

@@ -16,50 +16,51 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// In this file, t values are measured in fractional bars,
+// starting from 0.
+
 var React = require("react")
 
-let secondsPerBar =
-  ({ beatsPerBar, bpm }) =>
-    beatsPerBar / (bpm / 60)
-
-let adjust = (context, t, i) =>
-  t / secondsPerBar(context) - i
-
-export let Song = ({ context, song, t }) => {
-  var accumulatedDelay = 0
+export let Song = ({ song, t, onClickBar }) => {
+  var t0 = 0
   return <div className="sheet"> {
     song.barSequences.map(x => {
       let tag = <BarSequence
-        context={context}
-        t={t - accumulatedDelay}
+        onClickBar={onClickBar}
+        t0={t0}
+        t={t - t0}
         {...x} />
-      accumulatedDelay +=
-        secondsPerBar(context) * x.barSequence.bars.length
+      t0 += x.barSequence.bars.length
       return tag
     })
   } </div>
 }
 
-let BarSequence = ({ context, barSequence, t }) =>
+let BarSequence = ({ barSequence, t, t0, onClickBar }) =>
   <div className="bar-sequence">
     <div className="bar-sequence-name">{barSequence.name}</div>
     <div className="bar-sequence-bars">
       {barSequence.bars.map(
-        (x, i) => <Bar t={adjust(context, t, i)} context={context} {...x}/>)}
+        (x, i) =>
+          <Bar t0={t0 + i} t={t - i} {...x} onClickBar={onClickBar} />
+       )}
     </div>
   </div>
 
-let Bar = ({ context, t, bar }) =>
-  <div className="bar">
+let Bar = ({ t0, t, bar, onClickBar }) =>
+  <div className={`bar ${(t >= 0 && t < 1) ? "playing" : ""}`}
+       data-bar-number={t0}
+       onMouseDown={() => onClickBar(t0)}
+  >
     <div className="bar-voices">
       {bar.voices.map(x => <Voice t={t} voice={x}/>)}
     </div>
   </div>
 
-let Voice = ({ t, voice, context }) =>
+let Voice = ({ t, voice }) =>
   <div className="voice">
-    {voice.harmony ? <Harmony context={context} {...voice}/> : (
-       voice.lyric ? <Lyric context={context} {...voice}/> : null
+    {voice.harmony ? <Harmony {...voice}/> : (
+       voice.lyric ? <Lyric {...voice}/> : null
      )}
   </div>
 

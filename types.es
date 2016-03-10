@@ -1,3 +1,4 @@
+
 /*
  * This file is part of SketchBand.
  * Copyright (C) 2016  Mikael Brockman

@@ -19,13 +19,9 @@
 import * as React from "react"
 var PouchDB = require("pouchdb")
 
-var { parse } = require("./tab.es")
+var { PlaybackTracker } = require("./playback.es")
 var { Song } = require("./sheet.es")
-
-let defaultContext = {
-  beatsPerBar: 4,
-  bpm: 100,
-}
+var { parse, songLength } = require("./tab.es")
 
 export let Manager = React.createClass({
   getInitialState: function() {
@@ -114,7 +110,8 @@ export let Manager = React.createClass({
     let audioHash = this.state.song && this.state.song["audio-hash"]
     let audio = (
       audioHash
-        ? <audio controls src={`https://sketch.band:1967/ipfs/${audioHash}`} />
+        ? <audio ref="audio" controls crossOrigin
+             src={`https://sketch.band:1967/ipfs/${audioHash}`} />
         : null
     )
 
@@ -146,11 +143,41 @@ export let Manager = React.createClass({
         onBlur={this.save}
       />
     ) : null
+
+    function renderSong({ barProgress, addExplicitBarTimestamp }) {
+      let parsedSong = parse(song.content)
+      return (
+        <Song
+          t={barProgress}
+          onClickBar={
+            i => {
+              console.log("click", i)
+              addExplicitBarTimestamp({
+                barNumber: i,
+                barCount: songLength(parsedSong)
+              })
+            }
+          }
+          {...parsedSong}
+          />
+      )
+    }
+
+    let sheet = (
+      this.refs.audio
+        ? <PlaybackTracker
+            audioElement={this.refs.audio}
+            key={this.refs.audio}
+            renderChild={renderSong}
+          />
+        : renderSong({ barProgress: 0, addExplicitBarTimestamp: null })
+    )
+
     return (
       <div className="song-editor">
         <div className="song-editor-content">
           { textarea }
-          <Song context={defaultContext} t={0} {...parse(song.content)} />
+          { sheet }
         </div>
       </div>
     )

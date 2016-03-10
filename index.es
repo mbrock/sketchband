@@ -34,6 +34,7 @@ let appState = window.state = {
   hash: location.hash,
   songs: [],
   syncUrl: localStorage.getItem("sync-url"),
+  audioFiles: {}
 }
 
 // Custom pseudo-Redux
@@ -55,6 +56,29 @@ function applyEvent(state, event) {
       return { ...state,
         songs: [...state.songs, event.song]
       }
+    case "audio-download-started":
+      return {
+        ...state,
+        audioFiles: {
+          ...state.audioFiles,
+          [event.audioHash]: "downloading"
+        }
+      }
+    case "audio-download-finished":
+      return {
+        ...state,
+        audioFiles: {
+          ...state.audioFiles,
+          [event.audioHash]: event.data
+        }
+      }
+    case "audio-download-failed":
+      return {
+        ...state,
+        audioFiles: {
+          ...state.audioFiles,
+          [event.audioHash]: undefined
+        }
     default:
       throw new Error(`Unhandled event type ${event.type}`)
   }
@@ -66,6 +90,7 @@ let App = React.createClass({
       db,
       hash: this.props.hash,
       songs: this.props.songs.filter(x => !x._deleted),
+      audioFiles: this.props.audioFiles,
       syncUrl: this.props.syncUrl,
     }
     return <Manager {...props} />

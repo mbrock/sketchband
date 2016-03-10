@@ -29,6 +29,7 @@ textarea { border: none; }
 .bar { border: 1px solid #aaa; border-radius: 0.25rem; }
 .bar { margin: 0 0.5rem 0.5rem 0; }
 .bar { padding: 0.25rem 0.5rem; }
+.bar.playing { background-color: salmon; }
 
 .harmony { display: flex; }
 
