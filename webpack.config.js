@@ -5,16 +5,7 @@ var distPath = require("path").resolve(__dirname, "dist")
 var babelLoaderConf = {
   test: /\.es$/,
   loader: "babel-loader",
-  exclude: /node_modules/,
-  query: {
-    presets: ["es2015", "react"],
-    plugins: [
-      "transform-object-rest-spread",
-      "transform-regenerator",
-      "syntax-do-expressions",
-      "syntax-async-functions"
-    ]
-  }
+  exclude: /node_modules/
 }
 
 module.exports = {
