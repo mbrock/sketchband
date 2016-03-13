@@ -18,7 +18,7 @@
 
 import React from "react"
 
-export function makePlaybackFromAudioElement({
+export function makeKaraokeFromAudioElement({
   audioElement,
   explicitBarTimestamps = [],
   barCount
@@ -37,19 +37,19 @@ export function makePlaybackFromAudioElement({
 }
 
 export function addExplicitBarTimestamp({
-  playback,
+  karaoke,
   barNumber,
   timeInSeconds,
   barCount,
 }) {
   let explicitBarTimestamps = [
-    ...playback.explicitBarTimestamps,
+    ...karaoke.explicitBarTimestamps,
     { barNumber, timeInSeconds }
   ].sort(
     (a, b) => a.timeInSeconds - b.timeInSeconds
   )
   return {
-    ...playback,
+    ...karaoke,
     explicitBarTimestamps,
     implicitBarTimestamps: guessBarTimestamps({
       barTimestamps: explicitBarTimestamps,
@@ -164,10 +164,10 @@ export function guessProgressInFractionalBars({
   }
 }
 
-export let PlaybackTracker = React.createClass({
+export let Karaoke = React.createClass({
   getInitialState() {
     return {
-      playback: makePlaybackFromAudioElement({
+      karaoke: makeKaraokeFromAudioElement({
         audioElement: this.props.audioElement,
         barCount: this.props.barCount
       }),
@@ -194,7 +194,7 @@ export let PlaybackTracker = React.createClass({
     return this.props.renderChild({
       barProgress: guessProgressInFractionalBars({
         timeInSeconds: this.state.t,
-        barTimestamps: this.state.playback.implicitBarTimestamps
+        barTimestamps: this.state.karaoke.implicitBarTimestamps
       }),
       addExplicitBarTimestamp: this.addExplicitBarTimestamp
     })
@@ -202,8 +202,8 @@ export let PlaybackTracker = React.createClass({
 
   addExplicitBarTimestamp({ barNumber, barCount }) {
     this.setState({
-      playback: addExplicitBarTimestamp({
-        playback: this.state.playback,
+      karaoke: addExplicitBarTimestamp({
+        karaoke: this.state.karaoke,
         timeInSeconds: this.state.t,
         barNumber,
         barCount,

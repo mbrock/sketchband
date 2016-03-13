@@ -19,7 +19,7 @@
 import * as React from "react"
 var PouchDB = require("pouchdb")
 
-var { PlaybackTracker } = require("./playback.es")
+var { Karaoke } = require("./karaoke.es")
 var { Song } = require("./sheet.es")
 var { parse, songLength } = require("./tab.es")
 
@@ -165,7 +165,7 @@ export let Manager = React.createClass({
 
     let sheet = (
       this.refs.audio
-        ? <PlaybackTracker
+        ? <Karaoke
             audioElement={this.refs.audio}
             key={this.refs.audio}
             renderChild={renderSong}
