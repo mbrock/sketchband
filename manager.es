@@ -151,7 +151,6 @@ export let Manager = React.createClass({
           t={barProgress}
           onClickBar={
             i => {
-              console.log("click", i)
               addExplicitBarTimestamp({
                 barNumber: i,
                 barCount: songLength(parsedSong)
@@ -163,6 +162,12 @@ export let Manager = React.createClass({
       )
     }
 
+    // XXX dude refactor this is horrible okay here is what you need to do
+    // move all this timestamp book keeping nonsense into the mr manager
+    // and delete it from karaoke and pass the timestamps as props
+    // and then you don't need all this stupid garbage craziness
+    // and your life will be okay again
+    // maybe
     let sheet = (
       this.refs.audio
         ? <Karaoke
@@ -181,6 +186,15 @@ export let Manager = React.createClass({
         </div>
       </div>
     )
+  },
+
+  saveTimestamps: function(timestamps) {
+    this.setState({
+      song: {
+        ...this.state.song,
+        timestamps
+      }
+    }, this.save)
   },
 
   startSyncing: function() {
