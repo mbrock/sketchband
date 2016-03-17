@@ -79,6 +79,7 @@ function applyEvent(state, event) {
           ...state.audioFiles,
           [event.audioHash]: undefined
         }
+      }
     default:
       throw new Error(`Unhandled event type ${event.type}`)
   }
