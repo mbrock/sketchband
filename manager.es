@@ -60,6 +60,9 @@ export let Manager = React.createClass({
       >Sync</button>
     )
 
+    // XXX: It would be nice to refactor how the toolbar
+    // decides which buttons to show...
+
     let select = this.state.song ? (
       <select
         className="toolbar-song-picker"
