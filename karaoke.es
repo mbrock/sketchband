@@ -27,7 +27,6 @@ export function makeKaraokeFromAudioElement({
   let sourceNode = audioContext.createMediaElementSource(audioElement)
   sourceNode.connect(audioContext.destination)
   return {
-    getSongTimeInSeconds: () => audioElement.currentTime,
     explicitBarTimestamps,
     implicitBarTimestamps: guessBarTimestamps({
       barTimestamps: explicitBarTimestamps,
@@ -42,12 +41,23 @@ export function addExplicitBarTimestamp({
   timeInSeconds,
   barCount,
 }) {
-  let explicitBarTimestamps = [
-    ...karaoke.explicitBarTimestamps,
-    { barNumber, timeInSeconds }
-  ].sort(
-    (a, b) => a.timeInSeconds - b.timeInSeconds
-  )
+  return updateImplicitBarTimestamps({
+    karaoke,
+    barCount,
+    explicitBarTimestamps: sortBarTimestamps([
+      ...karaoke.explicitBarTimestamps,
+      { barNumber, timeInSeconds }
+    ])
+  })
+}
+
+function sortBarTimestamps(xs) {
+  return xs.sort((a, b) => a.timeInSeconds - b.timeInSeconds)
+}
+
+function updateImplicitBarTimestamps(
+  { karaoke, explicitBarTimestamps, barCount }
+) {
   return {
     ...karaoke,
     explicitBarTimestamps,
