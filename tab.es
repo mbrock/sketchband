@@ -131,14 +131,14 @@ let transposeNote = ((note, t) => {
 
 let readNote = (t => {
   if (t.length < 2) {
-    return t
+    return t.toUpperCase()
   }
 
   if (t[1] === 'b' || t[1] === '#') {
-    return t.substring(0, 2)
+    return t[0].toUpperCase() + t[1]
   }
 
-  return t.substring(0, 1)
+  return t[0].toUpperCase()
 })
 
 test(({ is, ok }) => {
@@ -146,6 +146,8 @@ test(({ is, ok }) => {
   is(readNote("Db"), "Db")
   is(readNote("D#sus"), "D#")
   is(readNote("Dsus"), "D")
+  is(readNote("d"), "D")
+  is(readNote("db"), "Db")
   is(transposeNote("C", 0), "C")
   is(transposeNote("C", 1), "C#")
   is(transposeNote("Db", 2), "Eb")
