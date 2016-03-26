@@ -105,7 +105,7 @@ document.head.innerHTML += (
 )
 
 function setAppState(state) {
-  appState = state
+  appState = window.state = state
   ReactDOM.render(app(state), div)
 }
 
