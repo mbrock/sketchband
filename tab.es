@@ -82,12 +82,12 @@ let parseChord =
     }
     else
     {
-      let modLength = slashPosition - 1 - rootNote.length
-      let modifiers = name.substring(rootNote.length, modLength)
-      let bassNote = readNote(name.substring(slashPosition))
+      let modLength = slashPosition - rootNote.length
+      let modifiers = name.substring(rootNote.length, slashPosition)
+      let bassNote = readNote(name.substring(slashPosition + 1))
 
       return makeChord({
-        name: transposeNote(rootNote, t) + modifiers +
+        name: transposeNote(rootNote, t) + modifiers + '/' +
           transposeNote(bassNote, t)
       })
     }
@@ -108,24 +108,22 @@ let noteRing = [
   ['B',  'B']
 ]
 
-let getNote = o => noteRing[o % noteRing.length]
-
+let mod = (n, m) => (((n % m) + m) % m)
+let getNote = o => noteRing[mod(o, noteRing.length)]
 let getSharp = o => getNote(o)[0]
-
 let getFlat = o => getNote(o)[1]
 
-let transposeNote =
-  ((note, t) => {
-    for (var i = 0; i < noteRing.length; ++i) {
-      if (noteRing[i][0] === note) {
-        return getSharp(i + t);
-      } else if (noteRing[i][1] === note) {
-        return getFlat(i + t);
-      }
+let transposeNote = ((note, t) => {
+  for (var i = 0; i < noteRing.length; ++i) {
+    if (noteRing[i][0] === note) {
+      return getSharp(i + t);
+    } else if (noteRing[i][1] === note) {
+      return getFlat(i + t);
     }
+  }
 
-    return name;
-  })
+  return name;
+})
 
 let readNote = (t => {
   if (t.length < 2) {
@@ -140,7 +138,17 @@ let readNote = (t => {
 })
 
 test(({ is, ok }) => {
+  is(readNote("D"), "D")
+  is(readNote("Db"), "Db")
+  is(readNote("D#sus"), "D#")
+  is(readNote("Dsus"), "D")
   is(transposeNote("C", 0), "C")
+  is(transposeNote("C", 1), "C#")
+  is(transposeNote("Db", 2), "Eb")
+  is(transposeNote("C#", 2), "D#")
+  is(parseChord("Dsus", 0), makeChord({ name: "Dsus" }))
+  is(parseChord("D#sus", 0), makeChord({ name: "D#sus" }))
+  is(parseChord("Dsus/F", 0), makeChord({ name: "Dsus/F" }))
 
   is(parseLine("C Em | hello", 0), makeBar({
     voices: [
