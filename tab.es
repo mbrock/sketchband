@@ -108,8 +108,12 @@ let noteRing = [
   ['B',  'B']
 ]
 
-let mod = (n, m) => (((n % m) + m) % m)
-let getNote = o => noteRing[mod(o, noteRing.length)]
+let loopedModulo = (value, divisor) => {
+  let n = value % divisor
+  return n < 0 ? (divisor + n) : n
+}
+
+let getNote = o => noteRing[loopedModulo(o, noteRing.length)]
 let getSharp = o => getNote(o)[0]
 let getFlat = o => getNote(o)[1]
 
