@@ -40,6 +40,10 @@ textarea { border: none; }
 .manager-toolbar { background: antiquewhite; }
 .toolbar-song-picker { font-weight: bold; background: cornsilk; border: 1px solid #ccc; }
 
+.song-player-toolbar { background: antiquewhite; }
+.song-player-toolbar { padding: 0 .75rem .25rem; }
+.song-player-toolbar { border-bottom: 1px solid #ccc; }
+
 .manager-toolbar { flex-shrink: 0; display: flex; }
 .manager-toolbar { justify-content: space-between; align-items: center; }
 .manager-toolbar { flex-wrap: wrap; }

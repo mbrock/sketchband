@@ -23,17 +23,6 @@ let concat = xss => [].concat.apply([], xss)
 
 let chordLength = 2
 
-let noteNames =
-  "a a# b bb c c# d d# e f f# g g#"
-let notes =
-  noteNames.split(" ").map(x => teoria.note(x))
-  
-let chordTypes =
-  ["", "7", "m", "/C", "/E", "/A", "maj7", "sus", "sus/C", "sus/F"]
-let chords =
-  concat(notes.map(note => chordTypes.map(type => note.chord(type))))
-
-let chordName = x => x.name
 let chordNotes = x => x.notes()
 let noteFrequency = x => x.fq() * Math.pow(Math.pow(2, 0), 1/12)
 
@@ -110,10 +99,10 @@ let recordSchedule = (audioContext, schedule) => {
 let recordChord = (audioContext, chord, duration) =>
   recordSchedule(audioContext, scheduleChord(chord, duration))
 
-export let synthesizeChords = async (audioContext) => {
+export let synthesizeChords = async (audioContext, chordNames) => {
   let buffers = {}
-  for (var i = 0; i < chords.length; i++)
-    buffers[chordName(chords[i])] =
-      await recordChord(audioContext, chords[i], chordLength)
+  for (var i = 0; i < chordNames.length; i++)
+    buffers[chordNames[i]] =
+      await recordChord(audioContext, teoria.chord(chordNames[i]), chordLength)
   return buffers
 }

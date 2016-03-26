@@ -19,8 +19,8 @@
 import * as React from "react"
 var PouchDB = require("pouchdb")
 
-var { Karaoke, KaraokeAudioElement } = require("./karaoke.es")
-var { Song } = require("./sheet.es")
+var { KaraokeAudioElement } = require("./karaoke.es")
+var { SongPlayer } = require("./song-player.es")
 var { parse, songLength } = require("./tab.es")
 
 export let Manager = React.createClass({
@@ -147,32 +147,9 @@ export let Manager = React.createClass({
       />
     ) : null
 
-    function renderSong({ barProgress, addExplicitBarTimestamp }) {
-      let parsedSong = parse(song.content)
-      return (
-        <Song
-          t={barProgress}
-          onClickBar={
-            i => {
-              addExplicitBarTimestamp({
-                barNumber: i,
-                barCount: songLength(parsedSong)
-              })
-            }
-          }
-          {...parsedSong}
-          />
-      )
-    }
-
+    let parsedSong = parse(song.content).song
     let sheet = (
-      this.refs.audio
-        ? <Karaoke
-            audioElement={this.refs.audio}
-            key={this.refs.audio}
-            renderChild={renderSong}
-          />
-        : renderSong({ barProgress: 0, addExplicitBarTimestamp: null })
+      <SongPlayer song={parsedSong} />
     )
 
     return (

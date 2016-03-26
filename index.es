@@ -23,9 +23,6 @@ var React = require("react")
 var ReactDOM = require("react-dom")
 var PouchDB = require("pouchdb")
 
-var { scheduleSong } = require("./schedule.es")
-var { synthesizeChords } = require("./synth.es")
-var { audioContext, playSchedule, toggleMute } = require("./audio.es")
 var { Manager } = require("./manager.es")
 
 const db = new PouchDB("sketch.band")
