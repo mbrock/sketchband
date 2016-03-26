@@ -49,9 +49,21 @@ function needsMoreChords(chords, chordNames) {
 
 export const SongPlayerToolbar = React.createClass({
   render() {
+    const chordText = (
+      this.props.chords.length
+        ? this.props.chords.join(", ")
+        : "Synthesizing..."
+    )
     return (
-      <div className="song-player-toolbar">
-        Chords: {allChordsUsedInSong(this.props.song).join(", ")}
+      <div className="player-toolbar">
+        <div className="player-toolbar-chords">
+          <div>
+            {chordText}
+          </div>
+        </div>
+        <div className="player-toolbar-buttons">
+          <button onClick={this.props.play}>Play</button>
+        </div>
       </div>
     )
   }
@@ -89,13 +101,27 @@ export const SongPlayer = React.createClass({
 
   render() {
     const { song } = this.props
-    const { timeInSeconds } = this.state
+    const { timeInSeconds, synthesizedChords } = this.state
     const barProgress = calculateBarProgress(song, timeInSeconds)
     return (
       <div className="song-player">
-        <SongPlayerToolbar song={song} />
+        <SongPlayerToolbar
+          song={song}
+          play={this.play}
+          chords={Object.keys(synthesizedChords)}
+        />
         <Song song={song} />
       </div>
+    )
+  },
+
+  play() {
+    playSchedule(
+      this.state.synthesizedChords,
+      scheduleSong(
+        { bpm: 100, beatsPerBar: 4 },
+        { song: this.props.song }
+      )
     )
   }
 })
