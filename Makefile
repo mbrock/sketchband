@@ -1,6 +1,7 @@
 NAME ?= sketchband
 PORT ?= 1967
 
+dev-serve:; ./node_modules/.bin/webpack-dev-server
 build:; node_modules/.bin/webpack
 serve:; node_modules/.bin/http-server -c-1 ./dist
 serve-https:; node_modules/.bin/http-server -c-1 -S \
