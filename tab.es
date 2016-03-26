@@ -1,17 +1,17 @@
 /*
  * This file is part of SketchBand.
  * Copyright (C) 2016  Mikael Brockman
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -24,8 +24,8 @@ var {
 let { test } = require("./test.es")
 
 export let parse =
-  text => makeSong({
-    barSequences: parseSong(text.split(/\n/).filter(x => x.trim().length))
+  (text, transposeSteps) => makeSong({
+    barSequences: parseSong(text.split(/\n/).filter(x => x.trim().length), transposeSteps)
   })
 
 export let songLength = ({ song }) => {
@@ -34,7 +34,7 @@ export let songLength = ({ song }) => {
   return n
 }
 
-let parseSong = lines => {
+let parseSong = (lines, transposeSteps) => {
   var barSequences = []
   var current = makeBarSequence({ name: "Fragment", bars: [] })
   for (var i = 0; i < lines.length; i++) {
@@ -46,19 +46,19 @@ let parseSong = lines => {
         current = makeBarSequence({ name: RegExp.$1, bars: [] })
       }
     } else {
-      current.barSequence.bars.push(parseLine(lines[i]))
+      current.barSequence.bars.push(parseLine(lines[i], transposeSteps))
     }
   }
   barSequences.push(current)
   return barSequences
 }
 
-let parseLine = line => {
+let parseLine = (line, transposeSteps) => {
   if (/^([^|]+)(?:\|(.*))?$/.test(line)) {
     let [harmony, lyric] = [RegExp.$1, RegExp.$2.trim()]
     return makeBar({
       voices: [
-        parseHarmony(harmony),
+        parseHarmony(harmony, transposeSteps),
         ...(lyric ? [makeLyric({ text: lyric })] : [])
       ]
     })
@@ -66,12 +66,83 @@ let parseLine = line => {
 }
 
 let parseHarmony =
-  s => makeHarmony({
-    chords: s.trim().split(" ").map(name => makeChord({ name }))
+  (s, transposeSteps) => makeHarmony({
+    chords: s.trim().split(" ").map(name => parseChord(name, transposeSteps))
   })
 
+let parseChord =
+  ((name, t) => {
+    let rootNote = readNote(name)
+    let slashPosition = name.indexOf('/')
+
+    if (slashPosition === -1) {
+      return makeChord({
+        name: transposeNote(rootNote, t) + name.substring(rootNote.length)
+      })
+    }
+    else
+    {
+      let modLength = slashPosition - 1 - rootNote.length
+      let modifiers = name.substring(rootNote.length, modLength)
+      let bassNote = readNote(name.substring(slashPosition))
+
+      return makeChord({
+        name: transposeNote(rootNote, t) + modifiers +
+          transposeNote(bassNote, t)
+      })
+    }
+  })
+
+let noteRing = [
+  ['C',  'C'],
+  ['C#', 'Db'],
+  ['D',  'D'],
+  ['D#', 'Eb'],
+  ['E',  'E'],
+  ['F',  'F'],
+  ['F#', 'Gb'],
+  ['G',  'G'],
+  ['G#', 'Ab'],
+  ['A',  'A'],
+  ['A#', 'Bb'],
+  ['B',  'B']
+]
+
+let getNote = o => noteRing[o % noteRing.length]
+
+let getSharp = o => getNote(o)[0]
+
+let getFlat = o => getNote(o)[1]
+
+let transposeNote =
+  ((note, t) => {
+    for (var i = 0; i < noteRing.length; ++i) {
+      if (noteRing[i][0] === note) {
+        return getSharp(i + t);
+      } else if (noteRing[i][1] === note) {
+        return getFlat(i + t);
+      }
+    }
+
+    return name;
+  })
+
+let readNote = (t => {
+  if (t.length < 2) {
+    return t
+  }
+
+  if (t[1] === 'b' || t[1] === '#') {
+    return t.substring(0, 2)
+  }
+
+  return t.substring(0, 1)
+})
+
 test(({ is, ok }) => {
-  is(parseLine("C Em | hello"), makeBar({
+  is(transposeNote("C", 0), "C")
+
+  is(parseLine("C Em | hello", 0), makeBar({
     voices: [
       makeHarmony({
         chords: [
@@ -91,9 +162,9 @@ test(({ is, ok }) => {
     ]
   })
 
-  is(parseLine("C"), simpleBar("C"))
+  is(parseLine("C", 0), simpleBar("C"))
 
-  is(parse("C"), makeSong({
+  is(parse("C", 0), makeSong({
     barSequences: [
       makeBarSequence({
         name: "Fragment",
@@ -108,7 +179,7 @@ test(({ is, ok }) => {
       bars: [simpleBar(chord)]
     })
 
-  is(parse("# verse\nC\n# chorus\n G"), makeSong({
+  is(parse("# verse\nC\n# chorus\n G", 0), makeSong({
     barSequences: [
       simpleBarSequence("verse", "C"),
       simpleBarSequence("chorus", "G")

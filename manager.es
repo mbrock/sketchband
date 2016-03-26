@@ -1,17 +1,17 @@
 /*
  * This file is part of SketchBand.
  * Copyright (C) 2016  Mikael Brockman
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -29,6 +29,7 @@ export let Manager = React.createClass({
       song: this.props.songs.length > 0 ? this.props.songs[0] : null,
       syncUrl: localStorage.getItem("sync-url"),
       editing: false,
+      transposeSteps: 0
     }
   },
 
@@ -77,6 +78,18 @@ export let Manager = React.createClass({
       }</select>
     ) : null
 
+    let transposeUp = (
+      <button onClick={this.transposeUp}>
+        ^
+      </button>
+    )
+
+    let transposeDown = (
+      <button onClick={this.transposeDown}>
+        v
+      </button>
+    )
+
     let newSong = (
       <button onClick={this.newSong}>
         New
@@ -88,7 +101,7 @@ export let Manager = React.createClass({
         ? <button onClick={this.rename}>Rename</button>
         : null
     )
-    
+
     let remove = (
       this.state.song
         ? <button onClick={this.remove}>Remove</button>
@@ -124,6 +137,8 @@ export let Manager = React.createClass({
           { select }
           { audio }
           <div className="toolbar-buttons">
+            { transposeUp }
+            { transposeDown }
             { toggleEdit }
             { rename }
             { remove }
@@ -138,6 +153,7 @@ export let Manager = React.createClass({
 
   renderSongEditor: function() {
     let song = this.state.song
+    let transposeSteps = this.state.transposeSteps
     let textarea = this.state.editing ? (
       <textarea
         className="song-editor-content-text"
@@ -147,7 +163,8 @@ export let Manager = React.createClass({
       />
     ) : null
 
-    let parsedSong = parse(song.content).song
+    let parsedSong = parse(song.content, transposeSteps).song
+
     let sheet = (
       <SongPlayer song={parsedSong} />
     )
@@ -223,7 +240,16 @@ export let Manager = React.createClass({
     this.props.db.put(this.state.song)
   },
 
+  transposeUp: function() {
+    this.setState({ transposeSteps: this.state.transposeSteps + 1 })
+  },
+
+  transposeDown: function() {
+    this.setState({ transposeSteps: this.state.transposeSteps - 1 })
+  },
+
   changeSelectedSong: function(event) {
+    this.setState({ transposeSteps: 0 });
     location.hash = `#${event.target.value}`
   },
 
@@ -254,4 +280,3 @@ export let Manager = React.createClass({
     })
   },
 })
-
