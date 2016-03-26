@@ -18,6 +18,20 @@
 
 import React from "react"
 
+export let KaraokeAudioElement = React.createClass({
+  componentDidMount() {
+    let audioContext = new AudioContext
+    let sourceNode = audioContext.createMediaElementSource(this.refs.audio)
+    sourceNode.connect(audioContext.destination)
+  },
+
+  render() {
+    return (
+      <audio ref="audio" controls crossOrigin src={this.props.src} />
+    )
+  }
+})
+
 export function makeKaraokeFromAudioElement({
   audioElement,
   explicitBarTimestamps = [],

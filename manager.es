@@ -19,7 +19,7 @@
 import * as React from "react"
 var PouchDB = require("pouchdb")
 
-var { Karaoke } = require("./karaoke.es")
+var { Karaoke, KaraokeAudioElement } = require("./karaoke.es")
 var { Song } = require("./sheet.es")
 var { parse, songLength } = require("./tab.es")
 
@@ -113,7 +113,7 @@ export let Manager = React.createClass({
     let audioHash = this.state.song && this.state.song["audio-hash"]
     let audio = (
       audioHash
-        ? <audio ref="audio" controls crossOrigin
+        ? <KaraokeAudioElement
              src={`https://sketch.band:1967/ipfs/${audioHash}`} />
         : null
     )
@@ -165,12 +165,6 @@ export let Manager = React.createClass({
       )
     }
 
-    // XXX dude refactor this is horrible okay here is what you need to do
-    // move all this timestamp book keeping nonsense into the mr manager
-    // and delete it from karaoke and pass the timestamps as props
-    // and then you don't need all this stupid garbage craziness
-    // and your life will be okay again
-    // maybe
     let sheet = (
       this.refs.audio
         ? <Karaoke
