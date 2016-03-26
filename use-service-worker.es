@@ -16,7 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-if ("serviceWorker" in navigator) {
+const shouldUseServiceWorker = (
+  location.hostname !== "localhost" || localStorage.useLocalServiceWorker
+)
+
+if (shouldUseServiceWorker && "serviceWorker" in navigator) {
   const serviceWorkerAlreadyInstalled = !!navigator.serviceWorker.controller
   if (serviceWorkerAlreadyInstalled) {
     navigator.serviceWorker.addEventListener(
