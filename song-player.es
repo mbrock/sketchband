@@ -83,7 +83,6 @@ export const SongPlayer = React.createClass({
         this.setState({ synthesizedChords })
       }).catch(e => {
         console.error(e)
-        alert("Synthesizer is broken!")
       })
     }
   },
