@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+while true; do
+  git fetch
+  if [[ $(git rev-parse HEAD) != $(git rev-parse @{u}) ]]; then
+    if git merge --ff-only; then
+      make restart-docker-https
+    else
+      echo $(date) "can't fast-forward, refusing to deploy..."
+    fi
+  fi
+  sleep 5
+done
