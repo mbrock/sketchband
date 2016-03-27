@@ -8,7 +8,7 @@ serve-https:; node_modules/.bin/http-server -c-1 -S \
   -C $(SSL_CERT) -K $(SSL_KEY) ./dist
 
 build-docker:; docker build -t $(NAME) .
-stop-docker:; docker stop $(NAME)
+stop-docker:; docker stop $(NAME) && docker rm $(NAME)
 
 # Assumes a LetsEncrypt-style setup...
 start-docker-https: build-docker
