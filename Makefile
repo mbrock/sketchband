@@ -16,7 +16,7 @@ start-docker-https: build-docker
 	  -p 443:443 \
 	  -v $(SSL_PATH):/ssl \
           --name $(NAME) $(NAME) \
-	  dumb-init /node_modules/.bin/http-server -p 443 -c-1 -S \
+	  ./dumb-init /node_modules/.bin/http-server -p 443 -c-1 -S \
 	    -C/ssl/live/$(HOSTNAME)/fullchain.pem \
 	    -K/ssl/live/$(HOSTNAME)/privkey.pem \
 	    ./dist
@@ -33,7 +33,7 @@ start-file-server:
 	  -v $(SSL_PATH):/ssl \
           -v $(FILES):/files \
 	  --name $(NAME)-files $(NAME) \
-	  dumb-init /node_modules/.bin/http-server -p 443 -c 9999 -S \
+	  ./dumb-init /node_modules/.bin/http-server -p 443 -c 9999 -S \
 	    -C/ssl/live/$(HOSTNAME)/fullchain.pem \
 	    -K/ssl/live/$(HOSTNAME)/privkey.pem \
 	    --cors \
