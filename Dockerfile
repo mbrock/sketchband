@@ -1,6 +1,7 @@
 FROM node:5
 COPY package.json /
-RUN wget https://github.com/Yelp/dumb-init/releases/download/v1.0.0/dumb-init_1.0.0_amd64
+RUN wget https://github.com/Yelp/dumb-init/releases/download/v1.0.0/dumb-init_1.0.0_amd64 \
+&& mv dumb-init_1.0.0_amd64 dumb-init
 RUN chmod +x dumb-init
 RUN npm install
 COPY . /app
