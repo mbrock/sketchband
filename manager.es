@@ -29,7 +29,6 @@ export let Manager = React.createClass({
       song: this.props.songs.length > 0 ? this.props.songs[0] : null,
       syncUrl: localStorage.getItem("sync-url"),
       editing: false,
-      transposeSteps: 0
     }
   },
 
@@ -153,7 +152,7 @@ export let Manager = React.createClass({
 
   renderSongEditor: function() {
     let song = this.state.song
-    let transposeSteps = this.state.transposeSteps
+    let transposeSteps = this.transposeSteps()
     let textarea = this.state.editing ? (
       <textarea
         className="song-editor-content-text"
@@ -240,16 +239,26 @@ export let Manager = React.createClass({
     this.props.db.put(this.state.song)
   },
 
+  transposeSteps: function() {
+    return this.props.transpositions[this.state.song._id] || 0
+  },
+
   transposeUp: function() {
-    this.setState({ transposeSteps: this.state.transposeSteps + 1 })
+    this.transposeBy(1)
   },
 
   transposeDown: function() {
-    this.setState({ transposeSteps: this.state.transposeSteps - 1 })
+    this.transposeBy(-1)
+  },
+
+  transposeBy: function(n) {
+    window.dispatch("transposition-changed", {
+      songId: this.state.song._id,
+      semitones: this.transposeSteps() + n
+   })
   },
 
   changeSelectedSong: function(event) {
-    this.setState({ transposeSteps: 0 });
     location.hash = `#${event.target.value}`
   },
 

@@ -31,7 +31,8 @@ let appState = window.state = {
   hash: location.hash,
   songs: [],
   syncUrl: localStorage.getItem("sync-url"),
-  audioFiles: {}
+  audioFiles: {},
+  transpositions: {}
 }
 
 // Custom pseudo-Redux
@@ -52,6 +53,14 @@ function applyEvent(state, event) {
     case "song-added":
       return { ...state,
         songs: [...state.songs, event.song]
+      }
+    case "transposition-changed":
+      return {
+        ...state,
+        transpositions: {
+          ...state.transpositions,
+          [event.songId]: event.semitones
+        }
       }
     case "audio-download-started":
       return {
@@ -90,6 +99,7 @@ let App = React.createClass({
       songs: this.props.songs.filter(x => !x._deleted),
       audioFiles: this.props.audioFiles,
       syncUrl: this.props.syncUrl,
+      transpositions: this.props.transpositions,
     }
     return <Manager {...props} />
   }
@@ -113,6 +123,9 @@ function dispatch(type, payload = {}, timestamp = new Date) {
   console.log(timestamp, type, payload)
   setAppState(applyEvent(appState, { type, timestamp, ...payload }))
 }
+
+// XXX: hacky, replace with some fancy Redux crap
+window.dispatch = dispatch
 
 onhashchange = () =>
   dispatch("hash-changed", { hash: location.hash })
