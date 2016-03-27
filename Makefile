@@ -30,4 +30,5 @@ start-file-server:
 	  dumb-init /node_modules/.bin/http-server -p 443 -c 9999 -S \
 	    -C/ssl/live/$(HOSTNAME)/fullchain.pem \
 	    -K/ssl/live/$(HOSTNAME)/privkey.pem \
+	    --cors \
 	    /files
