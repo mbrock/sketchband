@@ -93,12 +93,12 @@
   .manager { height: 100%; width: 100%; }
   
   .song-editor { height: 100%; overflow: hidden; }
-  .song-editor-content { height: 100%; display: flex; flex-direction: column; }
+  .song-editor-content { height: 100%; display: flex; }
   .song-editor-content-text { flex: 1 0; }
   
-  .song-player { height: 100%; }
+  .song-player { height: 100%; flex: 2 0; }
   .sheet { height: 100%; overflow: scroll; }
-  .sheet { flex: 3 0; padding-bottom: 4rem; }
+  .sheet { padding-bottom: 4rem; }
   .sheet { background: ivory; }
   
   .song-editor-content-text { background: dimgrey; color: ivory; }
