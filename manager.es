@@ -166,7 +166,7 @@ export let Manager = React.createClass({
     let parsedSong = parse(song.content, transposeSteps).song
 
     let sheet = (
-      <SongPlayer song={parsedSong} />
+      <SongPlayer song={parsedSong} songDocument={song} />
     )
 
     return (

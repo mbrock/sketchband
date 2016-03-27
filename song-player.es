@@ -56,10 +56,19 @@ export const SongPlayerToolbar = React.createClass({
     )
     return (
       <div className="player-toolbar">
+        <div className="player-toolbar-print-info">
+          <span className="title">
+            {this.props.songDocument.title}
+          </span>
+          {' by '}
+          <span className="author">
+            {this.props.songDocument.author}
+          </span>
+        </div>
         <div className="player-toolbar-chords">
-          <div>
-            {chordText}
-          </div>
+          <span>
+            Chords: {chordText}
+          </span>
         </div>
         <div className="player-toolbar-buttons">
           <button onClick={this.props.play}>Play</button>
@@ -100,13 +109,14 @@ export const SongPlayer = React.createClass({
   },
 
   render() {
-    const { song } = this.props
+    const { song, songDocument } = this.props
     const { timeInSeconds, synthesizedChords } = this.state
     const barProgress = calculateBarProgress(song, timeInSeconds)
     return (
       <div className="song-player">
         <SongPlayerToolbar
           song={song}
+          songDocument={songDocument}
           play={this.play}
           chords={Object.keys(synthesizedChords)}
         />
