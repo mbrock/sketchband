@@ -154,6 +154,7 @@ test(({ is, ok }) => {
   is(transposeNote("C#", 2), "D#")
   is(parseChord("Dsus", 0), makeChord({ name: "Dsus" }))
   is(parseChord("D#sus", 0), makeChord({ name: "D#sus" }))
+  is(parseChord("Dm/F#", 1), makeChord({ name: "D#m/G" }))
   is(parseChord("Dsus/F", 0), makeChord({ name: "Dsus/F" }))
 
   is(parseLine("C Em | hello", 0), makeBar({
