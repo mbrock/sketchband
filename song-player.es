@@ -24,10 +24,6 @@ import { audioContext, trackAudioTime, playSchedule } from "./audio.es"
 import { parse } from "./tab.es"
 import { Song } from "./sheet.es"
 
-function calculateBarProgress(song, timeInSeconds) {
-  return 0
-}
-
 function allChordsUsedInSong(song) {
   const object = {}
   song.barSequences.forEach(
@@ -99,7 +95,8 @@ export const SongPlayer = React.createClass({
   getInitialState() {
     return {
       timeInSeconds: 0,
-      synthesizedChords: {}
+      synthesizedChords: {},
+      barProgress: 0
     }
   },
 
@@ -127,10 +124,9 @@ export const SongPlayer = React.createClass({
 
   render() {
     const { song } = this.props
-    const { timeInSeconds, synthesizedChords } = this.state
+    const { synthesizedChords, barProgress } = this.state
     
     const parsedSong = this.parseSong()
-    const barProgress = calculateBarProgress(parsedSong, timeInSeconds)
     
     return (
       <div className="song-player">
@@ -140,7 +136,7 @@ export const SongPlayer = React.createClass({
           chords={Object.keys(synthesizedChords)}
           transposeSteps={this.props.transposeSteps}
         />
-        <Song song={parsedSong} />
+        <Song song={parsedSong} t={barProgress} />
       </div>
     )
   },
@@ -153,12 +149,18 @@ export const SongPlayer = React.createClass({
   },
 
   play() {
+    const context = { bpm: 100, beatsPerBar: 4 }
+    trackAudioTime(context, this.updateAudioTime)
     playSchedule(
       this.state.synthesizedChords,
       scheduleSong(
-        { bpm: 100, beatsPerBar: 4 },
+        context,
         { song: this.parseSong() }
       )
     )
+  },
+
+  updateAudioTime(t, i) {
+    this.setState({ barProgress: i })
   }
 })

@@ -26,6 +26,9 @@ requestAnimationFrame(() => {
   gainNode.gain.value = x === null ? 1 : +x
 })
 
+let secondsPerBar = ({ beatsPerBar, bpm }) =>
+  (60 / bpm) * beatsPerBar
+
 export let trackAudioTime = (context, f) => {
   let t0 = audioContext.currentTime
   let i = 0
@@ -33,7 +36,7 @@ export let trackAudioTime = (context, f) => {
     let j = (audioContext.currentTime - t0) / secondsPerBar(context)
     if (Math.floor(j) > i) {
       i = j
-      f(audioContext.currentTime - t0)
+      f(audioContext.currentTime - t0, j)
     }
     requestAnimationFrame(frame)
   }
