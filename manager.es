@@ -21,7 +21,6 @@ var PouchDB = require("pouchdb")
 
 var { KaraokeAudioElement } = require("./karaoke.es")
 var { SongPlayer } = require("./song-player.es")
-var { parse, songLength } = require("./tab.es")
 
 export let Manager = React.createClass({
   getInitialState: function() {
@@ -77,18 +76,6 @@ export let Manager = React.createClass({
       }</select>
     ) : null
 
-    let transposeUp = (
-      <button onClick={this.transposeUp}>
-        ^
-      </button>
-    )
-
-    let transposeDown = (
-      <button onClick={this.transposeDown}>
-        v
-      </button>
-    )
-
     let newSong = (
       <button onClick={this.newSong}>
         New
@@ -136,8 +123,6 @@ export let Manager = React.createClass({
           { select }
           { audio }
           <div className="toolbar-buttons">
-            { transposeUp }
-            { transposeDown }
             { toggleEdit }
             { rename }
             { remove }
@@ -162,10 +147,11 @@ export let Manager = React.createClass({
       />
     ) : null
 
-    let parsedSong = parse(song.content, transposeSteps).song
-
     let sheet = (
-      <SongPlayer song={parsedSong} songDocument={song} />
+      <SongPlayer
+        song={song}
+        transposeSteps={transposeSteps}
+      />
     )
 
     return (
@@ -241,21 +227,6 @@ export let Manager = React.createClass({
 
   transposeSteps: function() {
     return this.props.transpositions[this.state.song._id] || 0
-  },
-
-  transposeUp: function() {
-    this.transposeBy(1)
-  },
-
-  transposeDown: function() {
-    this.transposeBy(-1)
-  },
-
-  transposeBy: function(n) {
-    window.dispatch("transposition-changed", {
-      songId: this.state.song._id,
-      semitones: this.transposeSteps() + n
-   })
   },
 
   changeSelectedSong: function(event) {

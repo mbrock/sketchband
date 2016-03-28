@@ -21,7 +21,7 @@ import React from "react"
 import { synthesizeChords } from "./synth.es"
 import { scheduleSong } from "./schedule.es"
 import { audioContext, trackAudioTime, playSchedule } from "./audio.es"
-
+import { parse } from "./tab.es"
 import { Song } from "./sheet.es"
 
 function calculateBarProgress(song, timeInSeconds) {
@@ -58,11 +58,11 @@ export const SongPlayerToolbar = React.createClass({
       <div className="player-toolbar">
         <div className="player-toolbar-print-info">
           <span className="title">
-            {this.props.songDocument.title}
+            {this.props.song.title}
           </span>
           {' by '}
           <span className="author">
-            {this.props.songDocument.author}
+            {this.props.song.author}
           </span>
         </div>
         <div className="player-toolbar-chords">
@@ -71,11 +71,28 @@ export const SongPlayerToolbar = React.createClass({
           </span>
         </div>
         <div className="player-toolbar-buttons">
+          <button onClick={this.transposeUp}>↑</button>
+          <button onClick={this.transposeDown}>↓</button>
           <button onClick={this.props.play}>Play</button>
         </div>
       </div>
     )
-  }
+  },
+
+  transposeUp: function() {
+    this.transposeBy(1)
+  },
+
+  transposeDown: function() {
+    this.transposeBy(-1)
+  },
+
+  transposeBy: function(n) {
+    window.dispatch("transposition-changed", {
+      songId: this.props.song._id,
+      semitones: this.props.transposeSteps + n
+   })
+  },
 })
 
 export const SongPlayer = React.createClass({
@@ -87,15 +104,15 @@ export const SongPlayer = React.createClass({
   },
 
   componentWillMount() {
-    this.resynthesize(this.props.song)
+    this.resynthesize(this.props)
   },
 
   componentWillReceiveProps(next) {
-    this.resynthesize(next.song)
+    this.resynthesize(next)
   },
 
-  resynthesize(song) {
-    const chordNames = allChordsUsedInSong(song)
+  resynthesize(props) {
+    const chordNames = allChordsUsedInSong(this.parseSong(props))
     if (!needsMoreChords(this.state.synthesizedChords, chordNames)) {
       this.setState({ synthesizedChords: {} })
       synthesizeChords(
@@ -109,20 +126,30 @@ export const SongPlayer = React.createClass({
   },
 
   render() {
-    const { song, songDocument } = this.props
+    const { song } = this.props
     const { timeInSeconds, synthesizedChords } = this.state
-    const barProgress = calculateBarProgress(song, timeInSeconds)
+    
+    const parsedSong = this.parseSong()
+    const barProgress = calculateBarProgress(parsedSong, timeInSeconds)
+    
     return (
       <div className="song-player">
         <SongPlayerToolbar
           song={song}
-          songDocument={songDocument}
           play={this.play}
           chords={Object.keys(synthesizedChords)}
+          transposeSteps={this.props.transposeSteps}
         />
-        <Song song={song} />
+        <Song song={parsedSong} />
       </div>
     )
+  },
+
+  parseSong(props = this.props) {
+    return parse(
+      props.song.content,
+      props.transposeSteps
+    ).song
   },
 
   play() {
@@ -130,7 +157,7 @@ export const SongPlayer = React.createClass({
       this.state.synthesizedChords,
       scheduleSong(
         { bpm: 100, beatsPerBar: 4 },
-        { song: this.props.song }
+        { song: this.parseSong() }
       )
     )
   }
