@@ -50,6 +50,9 @@ export const SongPlayerToolbar = React.createClass({
         ? this.props.chords.join(", ")
         : "Synthesizing..."
     )
+    const originalChordText = (
+      this.props.originalChords.join(", ")
+    )
     return (
       <div className="player-toolbar">
         <div className="player-toolbar-print-info">
@@ -64,9 +67,11 @@ export const SongPlayerToolbar = React.createClass({
         <div className="player-toolbar-chords">
           <span>
             Chords: {chordText}
+            {originalChordText !== chordText ? ` (${originalChordText})` : ""}
           </span>
         </div>
         <div className="player-toolbar-buttons">
+          <button onClick={this.transposeReset}>0</button>
           <button onClick={this.transposeUp}>↑</button>
           <button onClick={this.transposeDown}>↓</button>
           <button onClick={this.props.play}>Play</button>
@@ -75,15 +80,19 @@ export const SongPlayerToolbar = React.createClass({
     )
   },
 
-  transposeUp: function() {
+  transposeReset() {
+    this.transposeBy(-this.props.transposeSteps)
+  },
+
+  transposeUp() {
     this.transposeBy(1)
   },
 
-  transposeDown: function() {
+  transposeDown() {
     this.transposeBy(-1)
   },
 
-  transposeBy: function(n) {
+  transposeBy(n) {
     window.dispatch("transposition-changed", {
       songId: this.props.song._id,
       semitones: this.props.transposeSteps + n
@@ -127,6 +136,9 @@ export const SongPlayer = React.createClass({
     const { synthesizedChords, barProgress } = this.state
     
     const parsedSong = this.parseSong()
+    const originalChords = allChordsUsedInSong(
+      this.parseSong({ ...this.props, transposeSteps: 0 })
+    )
     
     return (
       <div className="song-player">
@@ -134,6 +146,7 @@ export const SongPlayer = React.createClass({
           song={song}
           play={this.play}
           chords={Object.keys(synthesizedChords)}
+          originalChords={originalChords}
           transposeSteps={this.props.transposeSteps}
         />
         <Song song={parsedSong} t={barProgress} />
