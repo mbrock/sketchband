@@ -18,7 +18,8 @@ module.exports = {
       "pouchdb",
       "react",
       "react-dom",
-      "teoria"
+      "teoria",
+      "pegjs"
     ]
   },
   output: {
@@ -28,21 +29,21 @@ module.exports = {
   plugins: [
     new html({
       template: "index.html.ejs",
-      inject: "body",
+      inject: "body"
     }),
     new webpack.optimize.CommonsChunkPlugin(
       "vendor",
       "vendor.[chunkhash:12].js"
     ),
     function() {
-      
+
       // We use a service worker to make the app work offline.  This
       // little plugin compiles the service worker code with constants
       // defined based on the output of the app's compilation: namely,
       // the hash (which changes when any chunk changes) and the names
       // of all assets.  Given that stuff, the service worker can
       // download and cache the entire app.
-      
+
       this.plugin("emit", function(compilation, callback) {
         webpack({
           entry: "./service-worker.es",
@@ -79,6 +80,10 @@ module.exports = {
   devtool: "inline-source-map",
   module: {
     loaders: [
+      {
+        test: /\.pegjs$/,
+        loader: 'pegjs-loader'
+      },
       babelLoaderConf,
       {
         test: /\.css$/,

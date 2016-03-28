@@ -23,6 +23,8 @@ var {
 
 let { test } = require("./test.es")
 
+let { parseTab } = require("./tab-parser.es")
+
 export let parse =
   (text, transposeSteps) => makeSong({
     barSequences: parseSong(text.split(/\n/).filter(x => x.trim().length), transposeSteps)
