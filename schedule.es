@@ -71,7 +71,8 @@ let subdivideHarmony =
   harmony => ({
     // Obviously bogus stuff that should be dynamic.
     1: [[0, 0], [0, 2]],
-    2: [[0, 0], [0, 1], [1, 2], [1, 3]],
+    2: [[0, 0], [1, 2]],
+    4: [[0, 0], [1, 1], [2, 2], [3, 3]],
   }[harmony.length]).map(
     ([i, j]) => delaySchedule(scheduleChord(harmony[i]), j))
 
