@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-export let audioContext =
+let audioContext =
   new (window.AudioContext || window.webkitAudioContext)()
 
 let gainNode = audioContext.createGain()

@@ -20,7 +20,7 @@ import React from "react"
 
 import { synthesizeChords } from "./synth.es"
 import { scheduleSong } from "./schedule.es"
-import { audioContext, trackAudioTime, playSchedule } from "./audio.es"
+import { trackAudioTime, playSchedule } from "./audio.es"
 import { parse } from "./tab.es"
 import { Song } from "./sheet.es"
 
@@ -122,7 +122,7 @@ export const SongPlayer = React.createClass({
     if (!needsMoreChords(this.state.synthesizedChords, chordNames)) {
       this.setState({ synthesizedChords: {} })
       synthesizeChords(
-        audioContext, chordNames
+        chordNames
       ).then(synthesizedChords => {
         this.setState({ synthesizedChords })
       }).catch(e => {

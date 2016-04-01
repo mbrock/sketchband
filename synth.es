@@ -84,27 +84,30 @@ let playSchedule = (audioContext, schedule) => {
   schedule.forEach(x => playEvent(audioContext, x))
 }
 
-let makeOfflineAudioContext = (audioContext) =>
+const sampleRate = (
+  new (window.AudioContext || window.webkitAudioContext)()
+).sampleRate
+
+let makeOfflineAudioContext = () =>
   new (window.OfflineAudioContext || window.webkitOfflineAudioContext)(
-    2, audioContext.sampleRate * chordLength, audioContext.sampleRate)
+    2, sampleRate * chordLength, sampleRate)
 
 let render = audioContext => audioContext.startRendering()
 
-let recordSchedule = (audioContext, schedule) => {
-  let offlineAudioContext = makeOfflineAudioContext(audioContext)
+let recordSchedule = (schedule) => {
+  let offlineAudioContext = makeOfflineAudioContext()
   playSchedule(offlineAudioContext, schedule)
   return render(offlineAudioContext)
 }
 
-let recordChord = (audioContext, chord, duration) =>
-  recordSchedule(audioContext, scheduleChord(chord, duration))
+let recordChord = (chord, duration) =>
+  recordSchedule(scheduleChord(chord, duration))
 
-export let synthesizeChords = async (audioContext, chordNames) => {
+export let synthesizeChords = async chordNames => {
   let buffers = {}
   for (var i = 0; i < chordNames.length; i++)
     buffers[chordNames[i]] =
       await recordChord(
-        audioContext,
         teoria.chord(chordNames[i], 3),
         chordLength
       )
