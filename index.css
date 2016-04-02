@@ -26,11 +26,11 @@
   .player-toolbar-print-info { display: none; }
   
   html, body { height: 100%; width: 100%; overflow: hidden; }
+  body { margin: 0; }
 
-  .app { position: absolute; overflow: hidden; top: 0; left: 0; right: 0; bottom: 0; }
+  .app { display: flex; flex-direction: column; height: 100%; }
 
   body { font: 14px/1.2 "BlinkMacSystemFont", helvetica, sans-serif; }
-  body { margin: 0; }
 
   input, select, button, textarea { font: inherit; }
 
@@ -60,11 +60,15 @@
   .chord { font-weight: bold; }
   
   .manager-toolbar { background: antiquewhite; }
-  .toolbar-song-picker { font-weight: bold; background: cornsilk; border: 1px solid #ccc; }
+  .manager-toolbar { border-bottom: 1px solid #ccc; }
+
+  .toolbar-song-picker { font-weight: bold; }
+  .toolbar-song-picker { background: cornsilk; }
+  .toolbar-song-picker { border: 1px solid #ccc; }
   
   .player-toolbar { background: antiquewhite; }
-  .player-toolbar { padding: 0 .75rem .25rem; }
-  .player-toolbar { border-bottom: 1px solid #ccc; }
+  .player-toolbar { padding: .25rem .25rem; }
+  .player-toolbar { border-top: 1px solid #ccc; }
   
   .manager-toolbar { flex-shrink: 0; display: flex; }
   .manager-toolbar { justify-content: space-between; align-items: center; }
@@ -81,7 +85,7 @@
   button { background: #ddd; border: 1px outset #efefef; }
   button.pressed { border-style: inset; }
   
-  .player-toolbar { display: flex; }
+  .player-toolbar { display: flex; flex: 0 0; }
   .player-toolbar-chords { flex-grow: 3; }
   .player-toolbar-buttons { flex-grow: 1; }
   
@@ -89,17 +93,15 @@
   .player-toolbar-chords { justify-content: center; }
   .player-toolbar-buttons { display: flex; justify-content: flex-end; }
     
-  .manager { display: flex; flex-direction: column; }
-  .manager { height: 100%; width: 100%; }
+  .manager { display: flex; flex-direction: column; flex: 1; }
   
-  .song-editor { height: 100%; overflow: hidden; }
-  .song-editor-content { height: 100%; display: flex; }
+  .song-editor { display: flex; }
   .song-editor-content-text { flex: 1 0; }
 
   .song-player { display: flex; flex-direction: column; }
-  .song-player { height: 100%; flex: 2 0; }
-  .sheet { height: 100%; overflow: scroll; }
-  .sheet { padding-bottom: 10rem; }
+  .song-player { flex: 2 0; }
+  .sheet { overflow: scroll; }
+  .sheet { padding-bottom: 2rem; }
   .sheet { background: ivory; }
   
   .song-editor-content-text { background: dimgrey; color: ivory; }

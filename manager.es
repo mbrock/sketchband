@@ -156,10 +156,8 @@ export let Manager = React.createClass({
 
     return (
       <div className="song-editor">
-        <div className="song-editor-content">
-          { textarea }
-          { sheet }
-        </div>
+        { textarea }
+        { sheet }
       </div>
     )
   },

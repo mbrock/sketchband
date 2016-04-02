@@ -45,31 +45,8 @@ function needsMoreChords(chords, chordNames) {
 
 export const SongPlayerToolbar = React.createClass({
   render() {
-    const chordText = (
-      this.props.chords.length
-        ? this.props.chords.join(", ")
-        : "Synthesizing..."
-    )
-    const originalChordText = (
-      this.props.originalChords.join(", ")
-    )
     return (
       <div className="player-toolbar">
-        <div className="player-toolbar-print-info">
-          <span className="title">
-            {this.props.song.title}
-          </span>
-          {' by '}
-          <span className="author">
-            {this.props.song.author}
-          </span>
-        </div>
-        <div className="player-toolbar-chords">
-          <span>
-            Chords: {chordText}
-            {originalChordText !== chordText ? ` (${originalChordText})` : ""}
-          </span>
-        </div>
         <div className="player-toolbar-buttons">
           <button onClick={this.transposeReset}>0</button>
           <button onClick={this.transposeUp}>↑</button>
@@ -142,6 +119,16 @@ export const SongPlayer = React.createClass({
     
     return (
       <div className="song-player">
+        <div className="player-toolbar-print-info">
+          <span className="title">
+            {song.title}
+          </span>
+          {' by '}
+          <span className="author">
+            {song.author}
+          </span>
+        </div>
+        <Song song={parsedSong} t={barProgress} />
         <SongPlayerToolbar
           song={song}
           play={this.play}
@@ -149,7 +136,6 @@ export const SongPlayer = React.createClass({
           originalChords={originalChords}
           transposeSteps={this.props.transposeSteps}
         />
-        <Song song={parsedSong} t={barProgress} />
       </div>
     )
   },
