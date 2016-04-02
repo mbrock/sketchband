@@ -15,11 +15,16 @@
 @media print {
   .manager-toolbar { display: none; }
   .player-toolbar-buttons { display: none; }
-
   .player-toolbar-chords { margin-bottom: 1rem; }
   .bar-sequence-name { margin: .25rem 0; }
-
   .bar { margin: 0 .5rem .25rem 0; }
+}
+
+@font-face {
+  font-family: "Courier Prime Sans";
+  src:
+    url(font/courier-prime-sans.woff),
+    url(font/courier-prime-sans.ttf);
 }
 
 @media screen {
@@ -37,36 +42,34 @@
   select { -webkit-appearance: none; }
   select, input { padding: 0.25rem 0.5rem; }
   select { border-radius: 0; }
-  
-  input, textarea { font-family: courier; }
+
+  input, textarea { font-family: "Courier Prime Sans", monospace; }
   input { margin-right: 0.5rem; }
   
   textarea { display: block; width: 100%; padding: 0.5rem 1rem; }
   textarea { border: none; }
   *:focus { outline: 0; }
+
+  audio { opacity: 0.6; }
   
   .sheet { border: none; padding: 0.5rem .5rem; }
   
   .bar-sequence-name { margin-bottom: 0.25rem; }
   
-  .bar { background-color: cornsilk; }
-  .bar.playing { background-color: khaki; }
+  .bar.playing { background-color: #eee; }
   
   .bar { border: 1px solid #ccc; border-radius: 0.25rem; }
   .bar { margin: 0 0.5rem 0.5rem 0; }
   .bar { padding: 0.25rem 0.4rem; }
   
   .chord { padding: 0 0.25rem 0.1rem 0; }
-  .chord { font-weight: bold; }
+  .chord { font-weight: 500; }
   
-  .manager-toolbar { background: antiquewhite; }
   .manager-toolbar { border-bottom: 1px solid #ccc; }
 
   .toolbar-song-picker { font-weight: bold; }
-  .toolbar-song-picker { background: cornsilk; }
   .toolbar-song-picker { border: 1px solid #ccc; }
   
-  .player-toolbar { background: antiquewhite; }
   .player-toolbar { padding: .25rem .25rem; }
   .player-toolbar { border-top: 1px solid #ccc; }
   
@@ -77,12 +80,15 @@
   .manager-toolbar > * { margin-bottom: .5rem; }
   
   .toolbar-song-picker { flex-grow: 3; }
+
   .toolbar-buttons { flex-grow: 1; }
-  
   .toolbar-buttons { display: flex; justify-content: flex-end; }
+
+  .manager-toolbar, .player-toolbar { background: #eee; }
   
   button { margin: 0 .25rem; min-width: 5rem; }
   button { background: #ddd; border: 1px outset #efefef; }
+  button { border-radius: .25rem; }
   button.pressed { border-style: inset; }
   
   .player-toolbar { display: flex; flex: 0 0; }
@@ -99,12 +105,12 @@
   .song-editor-content-text { flex: 1 0; }
 
   .song-player { display: flex; flex-direction: column; }
-  .song-player { flex: 2 0; }
+  .song-player { flex: 1 0; }
   .sheet { overflow: scroll; }
   .sheet { padding-bottom: 2rem; }
-  .sheet { background: ivory; }
   
-  .song-editor-content-text { background: dimgrey; color: ivory; }
+  .song-editor-content-text { background: dimgrey; }
+  .song-editor-content-text { color: white; }
   
   audio { margin-left: 1rem; flex-grow: 1; }
 }
@@ -115,7 +121,6 @@
 
 @media screen and (max-width: 600px) {
   body { font-size: 12px; line-height: 14px; }
-  .bar { margin: 0; border: 0; padding-left: 0; }
   .toolbar-buttons { flex-wrap: wrap; justify-content: space-between; }
   .toolbar-buttons > * { border-width: 1px; min-width: inherit; }
   audio { margin-left: 0; }

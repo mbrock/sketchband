@@ -81,6 +81,10 @@ module.exports = {
     loaders: [
       babelLoaderConf,
       {
+        test: /\.(ttf|woff)$/,
+        loader: "file-loader"
+      },
+      {
         test: /\.css$/,
         loader: "style-loader!css-loader"
       }
